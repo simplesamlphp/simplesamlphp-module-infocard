@@ -1,12 +1,12 @@
 Information cards module for simpleSAMLphp
 ==========================================
 
-Introduction
--------------
-
 **WARNING: THIS IS NOT mature software, it's released with testing, educational, developing purposes. It's on a very
 early version, so don't rely the life of anybody on it.**
 
+
+Introduction
+-------------
 
 This is a SimpleSAMLphp module that works with Information Cards technologies and provides two basic functionalities:
 
