@@ -126,7 +126,7 @@ function enable_download($username, $cardid){
 	$time = 'x'.time(); //Cannot start with a number	
 	
 	$uuid = uniqid();
-	$handle = fopen(SimpleSAML_Utilities::getTempDir() . "/$uuid",'w');
+	$handle = fopen(SimpleSAML\Utils\System::getTempDir() . DIRECTORY_SEPARATOR . $uuid,'w');
 	if ($handle) {
 		fwrite($handle, strlen($username).$username.strlen($cardid).$cardid.strlen($time).$time);
 		fclose ($handle);
@@ -142,7 +142,7 @@ function enable_download($username, $cardid){
 *
 */
 function disable_download($uuid){
-	unlink("/tmp/$uuid");
+	unlink(SimpleSAML\Utils\System::getTempDir() . DIRECTORY_SEPARATOR . $uuid);
 }
 
 
@@ -152,7 +152,7 @@ function disable_download($uuid){
 */
 function is_card_enabled($uuid, $delivery_time){
 	$now = time();	
-	$filename = SimpleSAML_Utilities::getTempDir() . "/$uuid";
+	$filename = SimpleSAML\Utils\System::getTempDir() . DIRECTORY_SEPARATOR . $uuid;
 	
 	//File check
 	if (!file_exists($filename)) return false; //File doesn't exist
