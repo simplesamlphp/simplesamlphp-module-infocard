@@ -41,7 +41,7 @@ function decryptMcrypt($data,$key) {
 
 
 // grab the important parts of the token request.  these are the username,
-// password, and cardid.
+// password, and cardid
 
 Header('Content-Type: application/soap+xml;charset=utf-8');
 
@@ -125,7 +125,7 @@ print($response);
 //LOG
 if ($debugDir!=null){
 	$handle=fopen($debugDir.'/'.$messageid.'.log','w');
-	fwrite($handle,"  ------ InfoCard simpleSAMLphp Module LOG ------\n\n");
+	fwrite($handle,"  ------ InfoCard SimpleSAMLphp Module LOG ------\n\n");
 	fwrite($handle,"-- TIME: ".gmdate('Y-m-d').' '.gmdate('H:i:s')."\n");
 	fwrite($handle,"-- MESSAGE ID: ".$messageid."\n\n\n");
 	fwrite($handle,"-- RST\n");

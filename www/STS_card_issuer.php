@@ -203,7 +203,7 @@ $configuredIP =   $autoconfig->getValue('configuredIP');
 //RADIUS Request - Send One Time URL
 if ( (strcmp($_GET['ident'],'RADIUS')==0) && (($configuredIP == null) || ($_SERVER['REMOTE_ADDR'] == $configuredIP)) ){
 
-	/* Load the configuration. */
+	// Load the configuration
 	$key =   $autoconfig->getValue('symmetric_key');
 	$internalkey = hash('sha256', $autoconfig->getValue('internal_key'));
 
@@ -250,7 +250,7 @@ if ( (strcmp($_GET['ident'],'RADIUS')==0) && (($configuredIP == null) || ($_SERV
 	$iv = urlsafe_b64decode($_GET['iv']);
 	if ((!$encrequest)||(!$iv)) throw new SimpleSAML_Error_NotFound('The URL wasn\'t found in the module.');
 
-	/* Load the configuration. */
+	// Load the configuration
 	$internalkey = hash('sha256', $autoconfig->getValue('internal_key'));
 	$certificates =   $autoconfig->getValue('certificates');
 	$ICconfig['InfoCard'] = $autoconfig->getValue('InfoCard');

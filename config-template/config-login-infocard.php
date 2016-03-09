@@ -4,7 +4,7 @@
 * AUTHOR: Samuel Muñoz Hidalgo
 * EMAIL: samuel.mh@gmail.com
 * LAST REVISION: 13-FEB-09
-* DESCRIPTION: 'InfoCard' module configuration for simpleSAMLphp.
+* DESCRIPTION: 'InfoCard' module configuration for SimpleSAMLphp.
 
 
 Some definitions were taken from:

@@ -11,7 +11,7 @@
 
 
 
-/* Load the configuration. */
+// Load the configuration
 $config = SimpleSAML_Configuration::getInstance();
 $autoconfig = $config->copyFromBase('logininfocard', 'config-login-infocard.php');
 
@@ -25,7 +25,7 @@ $help_desk_email_URL = $autoconfig->getValue('help_desk_email_URL');
 $contact_info_URL = $autoconfig->getValue('contact_info_URL');
 
 
-/* Load the session of the current user. */
+// Load the session of the current user
 $session = SimpleSAML_Session::getSessionFromRequest();
 
 
@@ -50,7 +50,7 @@ unset($_POST); //Show the languages bar if reloaded
  
 //Login Page
 $t = new SimpleSAML_XHTML_Template($config, 'InfoCard:temp-login.php', 'InfoCard:dict-InfoCard'); //(configuracion, template, diccionario)
-$t->data['header'] = 'simpleSAMLphp: Infocard login';
+$t->data['header'] = 'SimpleSAMLphp: Infocard login';
 $t->data['stateparams'] = array('AuthState' => $authStateId);
 $t->data['IClogo'] = $IClogo;
 $t->data['InfoCard'] = $Infocard;
