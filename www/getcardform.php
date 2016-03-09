@@ -22,12 +22,12 @@ $Infocard =   $autoconfig->getValue('InfoCard');
 $session = SimpleSAML_Session::getSessionFromRequest();
 
 if (!array_key_exists('AuthState', $_REQUEST)) {
-SimpleSAML_Logger::debug('NO AUTH STATE');
-SimpleSAML_Logger::debug('ERROR: NO AUTH STATE');
+SimpleSAML\Logger::debug('NO AUTH STATE');
+SimpleSAML\Logger::debug('ERROR: NO AUTH STATE');
 	throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
 } else {
 	$authStateId = $_REQUEST['AuthState'];
-SimpleSAML_Logger::debug('AUTH STATE:  '.$authStateId);
+SimpleSAML\Logger::debug('AUTH STATE:  '.$authStateId);
 }
 
 $username = null;
@@ -67,7 +67,7 @@ if(array_key_exists('form', $_POST) && ($_POST['form']!=NULL)  ) {
 					*  certificate private key to decrypt the token.
 					*/
 					if(array_key_exists('xmlToken', $_POST) && ($_POST['xmlToken']!=NULL)  ) {
-						SimpleSAML_Logger::debug('HAY XML TOKEN');
+						SimpleSAML\Logger::debug('HAY XML TOKEN');
 						$token = new sspmod_InfoCard_RP_InfoCard();
 						$idp_key = $autoconfig->getValue('sts_key');
 						$token->addIDPKey($idp_key);
@@ -75,7 +75,7 @@ if(array_key_exists('form', $_POST) && ($_POST['form']!=NULL)  ) {
 						$claims = $token->process($_POST['xmlToken']);
 						if(($claims->isValid()) && ($claims->privatepersonalidentifier!=NULL)) {
 							$ppid = $claims->privatepersonalidentifier;
-							SimpleSAML_Logger::debug("PPID = $ppid");
+							SimpleSAML\Logger::debug("PPID = $ppid");
 							$ICconfig['InfoCard'] = $Infocard;
 							$ICconfig['InfoCard']['issuer'] = $autoconfig->getValue('tokenserviceurl');//sspmod_InfoCard_Utils::getIssuer($sts_crt);
 							$ICconfig['tokenserviceurl'] = $autoconfig->getValue('tokenserviceurl');
@@ -92,29 +92,29 @@ if(array_key_exists('form', $_POST) && ($_POST['form']!=NULL)  ) {
 							echo $IC;
 							$state = 'end';
 						}else {
-							SimpleSAML_Logger::debug('Wrong Self-Issued card');
+							SimpleSAML\Logger::debug('Wrong Self-Issued card');
 							$error = 'wrong_IC';
 							$state = "selfIssued";
 						}
 					}else{
-						SimpleSAML_Logger::debug('NO HAY XML TOKEN');
+						SimpleSAML\Logger::debug('NO HAY XML TOKEN');
 						$error = NULL;
 						$state = "selfIssued";
 					}
 				}else{
-					SimpleSAML_Logger::debug('CONFIGURATION ERROR: UserCredential '.$userCredential.' NOT SUPPORTED');
+					SimpleSAML\Logger::debug('CONFIGURATION ERROR: UserCredential '.$userCredential.' NOT SUPPORTED');
 				}
 			}else{
 				$error = 'Wrong_user_pass';
-				SimpleSAML_Logger::debug('WRONG username or password');
+				SimpleSAML\Logger::debug('WRONG username or password');
 			}
 		}else{
 			$error = 'NO_password';
-			SimpleSAML_Logger::debug('NO PASSWORD');
+			SimpleSAML\Logger::debug('NO PASSWORD');
 		}
 	}else {
 		$error = 'NO_user';
-		SimpleSAML_Logger::debug('NO USERNAME');
+		SimpleSAML\Logger::debug('NO USERNAME');
 	}
 }else{
 	$error = NULL;
@@ -124,7 +124,7 @@ if(array_key_exists('form', $_POST) && ($_POST['form']!=NULL)  ) {
 unset($_POST); //Show the languages bar if reloaded
 
 $t = new SimpleSAML_XHTML_Template($config, 'InfoCard:temp-getcardform.php', 'InfoCard:dict-InfoCard'); //(configuracion, template, diccionario)
-$t->data['header'] = 'simpleSAMLphp: Get your Infocard';
+$t->data['header'] = 'SimpleSAMLphp: Get your Infocard';
 $t->data['stateparams'] = array('AuthState' => $authStateId);
 
 

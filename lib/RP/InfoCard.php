@@ -54,7 +54,7 @@ class sspmod_InfoCard_RP_InfoCard
 	public function addSTSCertificate($sts_crt){
 		$this->_sts_crt = $sts_crt;
 		if(($sts_crt==NULL) || (strcmp($sts_crt,'')==0)) {
-			SimpleSAML_Logger::debug('WARNING: No STS certificate is set, ALL TOKENS WILL BE ACCEPTED');
+			SimpleSAML\Logger::debug('WARNING: No STS certificate is set, ALL TOKENS WILL BE ACCEPTED');
 		}else if( (!file_exists($sts_crt)) || (!is_readable($sts_crt))) {
       throw new Exception("STS certificate is not readable");
     }
@@ -101,11 +101,11 @@ class sspmod_InfoCard_RP_InfoCard
 
   public function process($xmlToken) {
     if(strpos($xmlToken, "EncryptedData") === false ) {
-SimpleSAML_Logger::debug('IC: UNsecureToken');
+SimpleSAML\Logger::debug('IC: UNsecureToken');
       return self::processUnSecureToken($xmlToken);
     }
     else {
-SimpleSAML_Logger::debug('IC: secureToken');
+SimpleSAML\Logger::debug('IC: secureToken');
       return self::processSecureToken($xmlToken);
     }
   }
@@ -118,7 +118,7 @@ SimpleSAML_Logger::debug('IC: secureToken');
       $decryptedToken = self::decryptToken($xmlToken);
     }
     catch(Exception $e) {
-			SimpleSAML_Logger::debug('ProcSecToken '.$e);
+			SimpleSAML\Logger::debug('ProcSecToken '.$e);
       $retval->setError('Failed to extract assertion document');
       throw new Exception('Failed to extract assertion document: ' . $e->getMessage());
       $retval->setCode(Zend_InfoCard_Claims::RESULT_PROCESSING_FAILURE);

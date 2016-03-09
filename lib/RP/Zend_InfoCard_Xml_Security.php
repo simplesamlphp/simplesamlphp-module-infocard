@@ -114,7 +114,7 @@ static public function validateXMLSignature($strXMLInput, $sts_crt=NULL){
 		//Extract the XMLToken issuer public key
 		switch(true) {
 			case isset($x509cert):
-				SimpleSAML_Logger::debug("Public Key: x509cert");
+				SimpleSAML\Logger::debug("Public Key: x509cert");
 				$certificate = (string)$x509cert;
 				$cert_issuer = "-----BEGIN CERTIFICATE-----\n".wordwrap($certificate, 64, "\n", true)."\n-----END CERTIFICATE-----";
 				if (!$t_key = openssl_pkey_get_public($cert_issuer)) {
@@ -135,7 +135,7 @@ static public function validateXMLSignature($strXMLInput, $sts_crt=NULL){
 				$pem_issuer = self::_getPublicKeyFromModExp($modulus, $exponent);
 				break;
 			default:
-				SimpleSAML_Logger::debug("Public Key: Unknown");
+				SimpleSAML\Logger::debug("Public Key: Unknown");
 				throw new Exception("Unable to determine or unsupported representation of the KeyValue block");
 		}
 			
@@ -146,7 +146,7 @@ static public function validateXMLSignature($strXMLInput, $sts_crt=NULL){
 		$pem_local = $checkData['key'];
 		
 		if ( strcmp($pem_issuer,$pem_local)!=0 ) {
-			SimpleSAML_Logger::debug("Configured STS cert and received STS cert mismatch");
+			SimpleSAML\Logger::debug("Configured STS cert and received STS cert mismatch");
 			openssl_free_key($check_key);
 			throw new Exception("Configured STS cert and received STS cert mismatch");			
 		}	
@@ -214,10 +214,10 @@ static public function validateXMLSignature($strXMLInput, $sts_crt=NULL){
 		$transformer = new Zend_InfoCard_Xml_Security_Transform();
 		$transformer->addTransform((string)$canonMethod['Algorithm']);
 		list($signedInfo) = $sxe->xpath("//ds:Signature/ds:SignedInfo");
-		//SimpleSAML_Logger::debug
+		//SimpleSAML\Logger::debug
 		//print ("signedinfo ".$sxe->saveXML());
 		$signedInfoXML = self::addNamespace($signedInfo, "http://www.w3.org/2000/09/xmldsig#");
-		SimpleSAML_Logger::debug("canonicalizo ".$signedInfoXML);
+		SimpleSAML\Logger::debug("canonicalizo ".$signedInfoXML);
 		$canonical_signedinfo = $transformer->applyTransforms($signedInfoXML);
 		if (openssl_verify($canonical_signedinfo,$signatureValue,$check_key)) {
 			list($reference) = $sxe->xpath("//ds:Signature/ds:SignedInfo/ds:Reference");

@@ -57,7 +57,7 @@ class Zend_InfoCard_Xml_Security_Transform
             case 'http://www.w3.org/2001/10/xml-exc-c14n#':
                 return 'Zend_InfoCard_Xml_Security_Transform_XmlExcC14N';
             default:
-                SimpleSAML_Logger::debug("Unknown or Unsupported Transformation Requested");
+                SimpleSAML\Logger::debug("Unknown or Unsupported Transformation Requested");
         }
     }
 

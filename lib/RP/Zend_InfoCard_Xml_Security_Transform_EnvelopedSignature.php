@@ -45,7 +45,7 @@ class Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature
 
 	list($signature) = $sxe->xpath("//ds:Signature");
         if(!isset($signature)) {
-            SimpleSAML_Logger::debug("Unable to locate Signature Block for EnvelopedSignature Transform");
+            SimpleSAML\Logger::debug("Unable to locate Signature Block for EnvelopedSignature Transform");
         }
 
         $transformed_xml = str_replace($signature->asXML(), "", $sxe->asXML());

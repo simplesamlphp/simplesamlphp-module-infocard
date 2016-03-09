@@ -88,7 +88,7 @@ class sspmod_InfoCard_Utils {
 		}
 	$requiredClaims = array();
 	$schema = $ICschema."/claims/";
-	SimpleSAML_Logger::debug("schema:   ".$schema);
+	SimpleSAML\Logger::debug("schema:   ".$schema);
 	$pattern='/\//';
 	$replacement='\/';
 	$schema= '/'.preg_replace($pattern,$replacement,$schema).'/';
@@ -97,8 +97,8 @@ class sspmod_InfoCard_Utils {
 		$uri = getUri($nodeList->item($i)->attributes);
 		$claim = preg_replace($schema,$replacement,$uri);
 		$requiredClaims[$i]=$claim;
-		SimpleSAML_Logger::debug("uri:   ".$uri);
-		SimpleSAML_Logger::debug("claim: ".$claim);
+		SimpleSAML\Logger::debug("uri:   ".$uri);
+		SimpleSAML\Logger::debug("claim: ".$claim);
 	}
 	return $requiredClaims;
 }

@@ -36,7 +36,7 @@ class sspmod_InfoCard_Auth_Source_ICAuth extends SimpleSAML_Auth_Source {
 		// We are going to need the authId in order to retrieve this authentication source later
 		$state[self::AUTHID] = $this->authId;
 		$id = SimpleSAML_Auth_State::saveState($state, self::STAGEID);
-		$url = SimpleSAML_Module::getModuleURL('InfoCard/login-infocard.php');
+		$url = SimpleSAML\Module::getModuleURL('InfoCard/login-infocard.php');
 		\SimpleSAML\Utils\HTTP::redirectTrustedURL($url, array('AuthState' => $id));
 	}
 	
@@ -55,9 +55,9 @@ class sspmod_InfoCard_Auth_Source_ICAuth extends SimpleSAML_Auth_Source {
 		$infocard->addIDPKey($idp_key, $idp_pass);
 		$infocard->addSTSCertificate($sts_crt);	
 		if (!$xmlToken)     
-			SimpleSAML_Logger::debug("XMLtoken: ".$xmlToken);
+			SimpleSAML\Logger::debug("XMLtoken: ".$xmlToken);
     else
-    	SimpleSAML_Logger::debug("NOXMLtoken: ".$xmlToken);
+    	SimpleSAML\Logger::debug("NOXMLtoken: ".$xmlToken);
 		$claims = $infocard->process($xmlToken);
  		if($claims->isValid()) {
 			$attributes = array();

@@ -46,7 +46,7 @@ function decryptMcrypt($data,$key) {
 Header('Content-Type: application/soap+xml;charset=utf-8');
 
 $config = SimpleSAML_Configuration::getInstance();
-SimpleSAML_Logger::debug('Tokenservice');
+SimpleSAML\Logger::debug('Tokenservice');
 
 $token = new DOMDocument();
 $token->loadXML($HTTP_RAW_POST_DATA);
@@ -62,7 +62,7 @@ $ICconfig['UserCredential'] = $autoconfig->getValue('UserCredential');
 $debugDir = $autoconfig->getValue('debugDir');
 
 
-SimpleSAML_Logger::debug('USERCREDENTIAL: '.$ICconfig['UserCredential']);
+SimpleSAML\Logger::debug('USERCREDENTIAL: '.$ICconfig['UserCredential']);
 switch($ICconfig['UserCredential']){
 	case "UsernamePasswordCredential":
 		$username = $doc->getElementsByTagname('Username')->item(0)->nodeValue;
@@ -87,9 +87,9 @@ switch($ICconfig['UserCredential']){
 		//Recuperar información
 		$encSamlToken = base64_decode($doc->getElementsByTagname('CipherValue')->item(1)->nodeValue);
 		$samlToken=decryptMcrypt($encSamlToken,$key);
-		SimpleSAML_Logger::debug('$samlToken'.$samlToken);
+		SimpleSAML\Logger::debug('$samlToken'.$samlToken);
 		$ppid=getppid($samlToken);
-		SimpleSAML_Logger::debug('PPID: '.$ppid);
+		SimpleSAML\Logger::debug('PPID: '.$ppid);
 
 		if (sspmod_InfoCard_UserFunctions::validateUser(array('PPID'=>$ppid),$ICconfig['UserCredential'])){
 			$authenticated = true;

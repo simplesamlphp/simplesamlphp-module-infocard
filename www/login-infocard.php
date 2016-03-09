@@ -30,19 +30,19 @@ $session = SimpleSAML_Session::getSessionFromRequest();
 
 
 if (!array_key_exists('AuthState', $_REQUEST)) {
-SimpleSAML_Logger::debug('NO AUTH STATE');
-SimpleSAML_Logger::debug('ERROR: NO AUTH STATE');
+SimpleSAML\Logger::debug('NO AUTH STATE');
+SimpleSAML\Logger::debug('ERROR: NO AUTH STATE');
 	throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
 } else {
 	$authStateId = $_REQUEST['AuthState'];
-SimpleSAML_Logger::debug('AUTH STATE:  '.$authStateId);
+SimpleSAML\Logger::debug('AUTH STATE:  '.$authStateId);
 }
 
 if(array_key_exists('xmlToken', $_POST) && ($_POST['xmlToken']!=NULL)  ) {
-SimpleSAML_Logger::debug('HAY XML TOKEN');
+SimpleSAML\Logger::debug('HAY XML TOKEN');
 	$error = sspmod_InfoCard_Auth_Source_ICAuth::handleLogin($authStateId, $_POST['xmlToken']);
 }else {
-SimpleSAML_Logger::debug('NO HAY XML TOKEN');
+SimpleSAML\Logger::debug('NO HAY XML TOKEN');
 	$error = NULL;
 }
 
