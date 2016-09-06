@@ -13,6 +13,7 @@
         "ssp-mixedcase-module-name": "InfoCard"
     },
     "require": {
+		"ext-simplesaml": "*",
         "simplesamlphp/composer-module-installer": "~1.0"
     }
 }
