@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -5,8 +6,8 @@
 * EMAIL: samuel.mh@gmail.com
 * LAST REVISION: 13-FEB-09
 * DESCRIPTION:
-*		User flow controller.
-*		Displays the template and request a non null xmlToken
+*        User flow controller.
+*        Displays the template and request a non null xmlToken
 */
 
 
@@ -32,18 +33,18 @@ $session = SimpleSAML_Session::getSessionFromRequest();
 if (!array_key_exists('AuthState', $_REQUEST)) {
 SimpleSAML\Logger::debug('NO AUTH STATE');
 SimpleSAML\Logger::debug('ERROR: NO AUTH STATE');
-	throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
+    throw new SimpleSAML_Error_BadRequest('Missing AuthState parameter.');
 } else {
-	$authStateId = $_REQUEST['AuthState'];
+    $authStateId = $_REQUEST['AuthState'];
 SimpleSAML\Logger::debug('AUTH STATE:  '.$authStateId);
 }
 
 if(array_key_exists('xmlToken', $_POST) && ($_POST['xmlToken']!=NULL)  ) {
 SimpleSAML\Logger::debug('HAY XML TOKEN');
-	$error = sspmod_InfoCard_Auth_Source_ICAuth::handleLogin($authStateId, $_POST['xmlToken']);
+    $error = sspmod_InfoCard_Auth_Source_ICAuth::handleLogin($authStateId, $_POST['xmlToken']);
 }else {
 SimpleSAML\Logger::debug('NO HAY XML TOKEN');
-	$error = NULL;
+    $error = NULL;
 }
 
 unset($_POST); //Show the languages bar if reloaded
