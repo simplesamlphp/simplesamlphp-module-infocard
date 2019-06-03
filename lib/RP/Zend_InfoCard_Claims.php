@@ -27,7 +27,10 @@
  * @package    Zend_InfoCard
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
+ * @property string $privatepersonalidentifier
  */
+
 class Zend_InfoCard_Claims
 {
     /**
@@ -48,9 +51,9 @@ class Zend_InfoCard_Claims
     /**
      * The default namespace to assume in these claims
      *
-     * @var string
+     * @var string|null
      */
-    protected $_defaultNamespace  = null;
+    protected $_defaultNamespace = null;
 
     /**
      * A boolean indicating if the claims should be consider "valid" or not based on processing
@@ -71,14 +74,15 @@ class Zend_InfoCard_Claims
      *
      * @var array
      */
-    protected $_claims;
+    protected $_claims = [];
 
     /**
      * The result code of processing the information card as defined by the constants of this class
      *
      * @var integer
      */
-    protected $_code;
+    protected $_code = 999;
+
 
     /**
      * Override for the safeguard which ensures that you don't use claims which failed validation.
@@ -93,6 +97,7 @@ class Zend_InfoCard_Claims
         return $this;
     }
 
+
     /**
      * Retrieve the PPI (Private Personal Identifier) associated with the information card
      *
@@ -102,6 +107,7 @@ class Zend_InfoCard_Claims
     {
         return $this->getClaim('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/privatepersonalidentifier');
     }
+
 
     /**
      * Retrieves the default namespace used in this information card. If a default namespace was not
@@ -113,33 +119,34 @@ class Zend_InfoCard_Claims
      */
     public function getDefaultNamespace()
     {
+        if (is_null($this->_defaultNamespace)) {
 
-        if(is_null($this->_defaultNamespace)) {
-
-            $namespaces = array();
+            $namespaces = [];
             $leader = '';
-            foreach($this->_claims as $claim) {
+            foreach ($this->_claims as $claim) {
 
-                if(!isset($namespaces[$claim['namespace']])) {
+                if (!isset($namespaces[$claim['namespace']])) {
                     $namespaces[$claim['namespace']] = 1;
                 } else {
                     $namespaces[$claim['namespace']]++;
                 }
 
-                if(empty($leader) || ($namespaces[$claim['namespace']] > $leader)) {
+                if (empty($leader) || ($namespaces[$claim['namespace']] > $leader)) {
                     $leader = $claim['namespace'];
                 }
             }
 
-            if(empty($leader)) {
+            if (empty($leader)) {
                 throw new Exception("Failed to determine default namespace");
             }
 
             $this->setDefaultNamespace($leader);
         }
 
+        /** @var string $this->_defaultNamespace */
         return $this->_defaultNamespace;
     }
+
 
     /**
      * Set the default namespace, overriding any existing default
@@ -151,8 +158,8 @@ class Zend_InfoCard_Claims
     public function setDefaultNamespace($namespace)
     {
 
-        foreach($this->_claims as $claim) {
-            if($namespace == $claim['namespace']) {
+        foreach ($this->_claims as $claim) {
+            if ($namespace == $claim['namespace']) {
                 $this->_defaultNamespace = $namespace;
                 return $this;
             }
@@ -160,6 +167,7 @@ class Zend_InfoCard_Claims
 
         throw new Exception("At least one claim must exist in specified namespace to make it the default namespace");
     }
+
 
     /**
      * Indicates if this claim object contains validated claims or not
@@ -170,6 +178,7 @@ class Zend_InfoCard_Claims
     {
         return $this->_isValid;
     }
+
 
     /**
      * Set the error message contained within the claims object
@@ -184,6 +193,7 @@ class Zend_InfoCard_Claims
         return $this;
     }
 
+
     /**
      * Retrieve the error message contained within the claims object
      *
@@ -193,6 +203,7 @@ class Zend_InfoCard_Claims
     {
         return $this->_error;
     }
+
 
     /**
      * Set the claims for the claims object. Can only be set once and is done
@@ -204,13 +215,14 @@ class Zend_InfoCard_Claims
      */
     public function setClaims(Array $claims)
     {
-        if(!is_null($this->_claims)) {
+        if (!empty($this->_claims)) {
             throw new Exception("Claim objects are read-only");
         }
 
         $this->_claims = $claims;
         return $this;
     }
+
 
     /**
      * Set the result code of the claims object.
@@ -221,7 +233,7 @@ class Zend_InfoCard_Claims
      */
     public function setCode($code)
     {
-        switch($code) {
+        switch ($code) {
             case self::RESULT_PROCESSING_FAILURE:
             case self::RESULT_SUCCESS:
             case self::RESULT_VALIDATION_FAILURE:
@@ -231,6 +243,7 @@ class Zend_InfoCard_Claims
 
         throw new Exception("Attempted to set unknown error code");
     }
+
 
     /**
      * Gets the result code of the claims object
@@ -242,6 +255,7 @@ class Zend_InfoCard_Claims
         return $this->_code;
     }
 
+
     /**
      * Get a claim by providing its complete claim URI
      *
@@ -250,12 +264,13 @@ class Zend_InfoCard_Claims
      */
     public function getClaim($claimURI)
     {
-        if($this->claimExists($claimURI)) {
+        if ($this->claimExists($claimURI)) {
             return $this->_claims[$claimURI]['value'];
         }
 
         return null;
     }
+
 
     /**
      * Indicates if a specific claim URI exists or not within the object
@@ -268,8 +283,10 @@ class Zend_InfoCard_Claims
         return isset($this->_claims[$claimURI]);
     }
 
+
     /**
      * Magic helper function
+     * @param string $k
      * @throws Exception
      */
     public function __unset($k)
@@ -277,24 +294,33 @@ class Zend_InfoCard_Claims
         throw new Exception("Claim objects are read-only");
     }
 
+
     /**
      * Magic helper function
+     * @param string $k
+     * @return bool
      */
     public function __isset($k)
     {
         return $this->claimExists("{$this->getDefaultNamespace()}/$k");
     }
 
+
     /**
      * Magic helper function
+     * @param string $k
+     * @return string
      */
     public function __get($k)
     {
         return $this->getClaim("{$this->getDefaultNamespace()}/$k");
     }
 
+
     /**
      * Magic helper function
+     * @param string $k
+     * @param mixed $v
      * @throws Exception
      */
     public function __set($k, $v)

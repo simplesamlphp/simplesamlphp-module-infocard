@@ -7,8 +7,8 @@
 * DESCRIPTION: 'login-infocard' module dictionary.
 */
 
-$lang = array(
-    'wrong_IC' => array (
+$lang = [
+    'wrong_IC' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -25,8 +25,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'get_IC' => array (
+    ],
+    'get_IC' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -43,8 +43,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'get_IC_link' => array (
+    ],
+    'get_IC_link' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -61,8 +61,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'form_username' => array (
+    ],
+    'form_username' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -79,8 +79,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'form_password' => array (
+    ],
+    'form_password' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -97,8 +97,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'error_header' => array (
+    ],
+    'error_header' => [
         'no' => 'Feil',
         'nn' => 'Feil',
         'da' => 'Fejl',
@@ -115,8 +115,8 @@ $lang = array(
         'hu' => 'Hiba',
         'pt' => 'Erro',
         'pt-br' => 'Erro',
-    ),
-    'user_IC_header' => array (
+    ],
+    'user_IC_header' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -133,8 +133,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'user_IC_text' => array (
+    ],
+    'user_IC_text' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -151,8 +151,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'login_button' => array (
+    ],
+    'login_button' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -169,8 +169,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'get_button' => array (
+    ],
+    'get_button' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -187,8 +187,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'help_header' => array (
+    ],
+    'help_header' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -205,8 +205,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'help_text' => array (
+    ],
+    'help_text' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -223,8 +223,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'help_desk_link' => array (
+    ],
+    'help_desk_link' => [
         'no' => 'Hjemmesiden til brukerstøtte',
         'nn' => 'Heimeside for brukarstøtte',
         'da' => 'Servicedesk',
@@ -238,8 +238,8 @@ $lang = array(
         'hu' => 'Ügyfélszolgálat weboldala',
         'pt' => 'Página do serviço de apoio ao utilizador',
         'pt-br' => 'Central de Ajuda',
-    ),
-    'help_desk_email' => array (
+    ],
+    'help_desk_email' => [
         'no' => 'Send e-post til brukerstøtte',
         'nn' => 'Send epost til brukarstøtte',
         'da' => 'Send en e-mail servicedesk',
@@ -253,8 +253,8 @@ $lang = array(
         'hu' => 'Küldjön e-mailt az ügyfélszolgálatnak',
         'pt' => 'Enviar um e-mail para o serviço de apoio ao utilizador',
         'pt-br' => 'Envie um e-mail para a Central de Ajuda.',
-    ),
-    'contact_info' => array (
+    ],
+    'contact_info' => [
         'no' => 'Kontaktinformasjon',
         'nn' => 'Kontaktinformasjon',
         'da' => 'Kontaktoplysninger',
@@ -268,8 +268,8 @@ $lang = array(
         'hu' => 'Elérési információk',
         'pt' => 'Contactos',
         'pt-br' => 'Informações de Contato',
-    ),    
-    'getcardform_title' => array (
+    ],
+    'getcardform_title' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -286,8 +286,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'getcardform_self_title' => array (
+    ],
+    'getcardform_self_title' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -304,8 +304,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'getcardform_self_text' => array (
+    ],
+    'getcardform_self_text' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -322,8 +322,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'getcardform_finished_title' => array (
+    ],
+    'getcardform_finished_title' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -340,8 +340,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'getcardform_finished_text' => array (
+    ],
+    'getcardform_finished_text' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -358,8 +358,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'NO_password' => array (
+    ],
+    'NO_password' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -376,8 +376,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'NO_user' => array (
+    ],
+    'NO_user' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -394,8 +394,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    'Wrong_user_pass' => array (
+    ],
+    'Wrong_user_pass' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -412,8 +412,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    '' => array (
+    ],
+    '' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -430,8 +430,8 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-    '' => array (
+    ],
+    '' => [
         'no' => '',
         'nn' => '',
         'da' => '',
@@ -448,6 +448,5 @@ $lang = array(
         'hu' => '',
         'pt' => '',
         'pt-br' => '',
-    ),
-
-);
+    ],
+];

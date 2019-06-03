@@ -10,28 +10,31 @@
 
 $method = $_SERVER["REQUEST_METHOD"];
 
-if ($method == "POST"){
+if ($method == "POST") {
     $use_soap = true;
     Header('Content-Type: application/soap+xml;charset=utf-8');
-}else{
+} else {
     $use_soap = false;
     Header('Content-Type: application/xml;charset=utf-8');
 }
 
 
-$config = SimpleSAML_Configuration::getInstance();
-$autoconfig = $config->copyFromBase('logininfocard', 'config-login-infocard.php');
+$config = \SimpleSAML\Configuration::getInstance();
+$autoconfig = $config->getConfig('config-login-infocard.php');
+$ICconfig = [];
 $ICconfig['tokenserviceurl'] = $autoconfig->getValue('tokenserviceurl');
-$ICconfig['certificates'] = $autoconfig->getValue('certificates');
+$ICconfig['certificates'] = $autoconfig->getArray('certificates', []);
 $ICconfig['UserCredential'] = $autoconfig->getValue('UserCredential');
 
 
 // Grab the important parts of the token request.  That's pretty much just
 // the request ID
 $request_id = '';
+/** @psalm-suppress UndefinedGlobalVariable */
 if ($use_soap && strlen($HTTP_RAW_POST_DATA))
 {
     $token = new DOMDocument();
+    /** @psalm-suppress UndefinedGlobalVariable */
     $token->loadXML($HTTP_RAW_POST_DATA);
     $doc = $token->documentElement;
     $elements = $doc->getElementsByTagname('MessageID');
@@ -105,7 +108,7 @@ $buf .= '<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa
                                 $buf .= '</sp:TransportBinding>';
                                 
                                 // Authentication token assertion
-                                switch($ICconfig['UserCredential']){
+                                switch ($ICconfig['UserCredential']) {
                                     case "UsernamePasswordCredential":
                                         $buf .= '<sp:SignedSupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">';
                                             $buf .= '<wsp:Policy>';
@@ -210,8 +213,8 @@ $buf .= '<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa
                                     $buf .= '<ds:KeyInfo>';
                                         $buf .= '<ds:X509Data>';
                                             $buf .= '<ds:X509Certificate>';
-                                                $buf .= sspmod_InfoCard_Utils::takeCert($ICconfig['certificates'][0]);
-                                            $buf .='</ds:X509Certificate>';
+                                                $buf .= \SimpleSAML\Module\InfoCard\Utils::takeCert($ICconfig['certificates'][0]);
+                                            $buf .= '</ds:X509Certificate>';
                                         $buf .= '</ds:X509Data>';
                                     $buf .= '</ds:KeyInfo>';
                                 $buf .= '</wsid:Identity>';

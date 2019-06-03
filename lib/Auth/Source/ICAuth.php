@@ -1,5 +1,9 @@
 <?php
 
+namespace SimpleSAML\Module\InfoCard\Auth\Source;
+
+use Webmozart\Assert\Assert;
+
 /*
 * AUTHOR: Samuel Muñoz Hidalgo
 * EMAIL: samuel.mh@gmail.com
@@ -10,81 +14,96 @@
 *  Infocard's claims are extracted passed as attributes.
 */
 
+class ICAuth extends \SimpleSAML\Auth\Source
+{
+    //The string used to identify our states.
+    const STAGEID = '\SimpleSAML\Module\core\Auth\UserPassBase.state';
 
-class sspmod_InfoCard_Auth_Source_ICAuth extends SimpleSAML_Auth_Source {
 
-	//The string used to identify our states.
-	const STAGEID = 'sspmod_core_Auth_UserPassBase.state';
+    //The key of the AuthId field in the state.
+    const AUTHID = '\SimpleSAML\Module\core\Auth\UserPassBase.AuthId';
 
+    
+    /**
+     * @param array $info
+     * @param array $config
+     */
+    public function __construct($info, $config)
+    {
+        // Call the parent constructor first, as required by the interface
+        parent::__construct($info, $config);
+    }
+    
+    
+    /**
+     * @param array &$state
+     * @return void
+     */
+    public function authenticate(&$state)
+    {
+        // We are going to need the authId in order to retrieve this authentication source later
+        $state[self::AUTHID] = $this->authId;
+        $id = \SimpleSAML\Auth\State::saveState($state, self::STAGEID);
+        $url = \SimpleSAML\Module::getModuleURL('InfoCard/login-infocard.php');
+        \SimpleSAML\Utils\HTTP::redirectTrustedURL($url, ['AuthState' => $id]);
+    }
+    
 
-	//The key of the AuthId field in the state.
-	const AUTHID = 'sspmod_core_Auth_UserPassBase.AuthId';
+    /**
+     * @param string $authStateId
+     * @param string $xmlToken
+     * @return string|null
+     * @throws \Exception
+     */
+    public static function handleLogin($authStateId, $xmlToken)
+    {
+        Assert::string($authStateId);
 
-	
-	public function __construct($info, $config) {
-		assert('is_array($info)');
-		assert('is_array($config)');
+        $config = \SimpleSAML\Configuration::getInstance();
+        $autoconfig = $config->getConfig('config-login-infocard.php');
+        $idp_key = $autoconfig->getValue('idp_key');
+        $idp_pass = $autoconfig->getValue('idp_key_pass', null);
+        $sts_crt = $autoconfig->getValue('sts_crt');
+        $Infocard = $autoconfig->getValue('InfoCard');
 
-		// Call the parent constructor first, as required by the interface
-		parent::__construct($info, $config);
-	}
-	
-	
-	public function authenticate(&$state) {
-		assert('is_array($state)');
+        $infocard = new \SimpleSAML\Module\InfoCard\RP\InfoCard();
+        $infocard->addIDPKey($idp_key, $idp_pass);
+        $infocard->addSTSCertificate($sts_crt);    
+        if (!$xmlToken) {
+            \SimpleSAML\Logger::debug("XMLtoken: ".$xmlToken);
+        } else {
+            \SimpleSAML\Logger::debug("NOXMLtoken: ".$xmlToken);
+            $claims = $infocard->process($xmlToken);
+            if ($claims->isValid()) {
+                $attributes = [];
+                foreach ($Infocard['requiredClaims'] as $claim => $data) {
+                    $attributes[$claim] = [$claims->$claim];
+                }
+                foreach ($Infocard['optionalClaims'] as $claim => $data) {
+                    $attributes[$claim] = [$claims->$claim];
+                }
 
-		// We are going to need the authId in order to retrieve this authentication source later
-		$state[self::AUTHID] = $this->authId;
-		$id = SimpleSAML_Auth_State::saveState($state, self::STAGEID);
-		$url = SimpleSAML\Module::getModuleURL('InfoCard/login-infocard.php');
-		\SimpleSAML\Utils\HTTP::redirectTrustedURL($url, array('AuthState' => $id));
-	}
-	
-
-	public static function handleLogin($authStateId, $xmlToken) {
-		assert('is_string($authStateId)');		
-
-		$config = SimpleSAML_Configuration::getInstance();
-		$autoconfig = $config->copyFromBase('logininfocard', 'config-login-infocard.php');
-		$idp_key = $autoconfig->getValue('idp_key');
-		$idp_pass = $autoconfig->getValue('idp_key_pass', NULL);
-		$sts_crt = $autoconfig->getValue('sts_crt');
-		$Infocard =   $autoconfig->getValue('InfoCard');
-
-		$infocard = new sspmod_InfoCard_RP_InfoCard();
-		$infocard->addIDPKey($idp_key, $idp_pass);
-		$infocard->addSTSCertificate($sts_crt);	
-		if (!$xmlToken)     
-			SimpleSAML\Logger::debug("XMLtoken: ".$xmlToken);
-    else
-    	SimpleSAML\Logger::debug("NOXMLtoken: ".$xmlToken);
-		$claims = $infocard->process($xmlToken);
- 		if($claims->isValid()) {
-			$attributes = array();
-			foreach ($Infocard['requiredClaims'] as $claim => $data){
-				$attributes[$claim] = array($claims->$claim);
-			}
-			foreach ($Infocard['optionalClaims'] as $claim => $data){
-				$attributes[$claim] = array($claims->$claim);
-			}
-
-			// Retrieve the authentication state
-			$state = SimpleSAML_Auth_State::loadState($authStateId, self::STAGEID);
-			// Find authentication source
-			assert('array_key_exists(self::AUTHID, $state)');
-			$source = SimpleSAML_Auth_Source::getById($state[self::AUTHID]);
-			if ($source === NULL) {
-				throw new Exception('Could not find authentication source with id ' . $state[self::AUTHID]);
-			}			
-			$state['Attributes'] = $attributes;	
-			unset($infocard);
-			unset($claims);
-			SimpleSAML_Auth_Source::completeAuth($state);
-		} else {
-			unset($infocard);
-			unset($claims);
-			return 'wrong_IC';
-		}
-	}
-
+                // Retrieve the authentication state
+                $state = \SimpleSAML\Auth\State::loadState($authStateId, self::STAGEID);
+                if (is_null($state)) {
+                    throw new \SimpleSAML\Error\NoState();
+                } else if (!array_key_exists(self::AUTHID, $state)) {
+                    throw new \SimpleSAML\Error\AuthSource(self::AUTHID, "AuthSource not found in state");
+                }
+                // Find authentication source
+                $source = \SimpleSAML\Auth\Source::getById($state[self::AUTHID]);
+                if ($source === null) {
+                    throw new \Exception('Could not find authentication source with id '.$state[self::AUTHID]);
+                }            
+                $state['Attributes'] = $attributes;    
+                unset($infocard);
+                unset($claims);
+                \SimpleSAML\Auth\Source::completeAuth($state);
+            } else {
+                unset($infocard);
+                unset($claims);
+                return 'wrong_IC';
+            }
+        }
+    }
 }

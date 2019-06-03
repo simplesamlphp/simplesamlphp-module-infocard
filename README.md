@@ -52,9 +52,9 @@ SimpleSAMLphp installation directory.
 4. Edit the `config/authsources.php` file, add the following text before the last `);`:
 
 ```php
-        'InfoCard' => array(
+        'InfoCard' => [
             'InfoCard:ICAuth',
-        ),
+        ],
 ```
 
 5. That's all.

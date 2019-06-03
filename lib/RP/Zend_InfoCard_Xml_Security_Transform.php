@@ -40,26 +40,29 @@ class Zend_InfoCard_Xml_Security_Transform
      *
      * @var array
      */
-    protected $_transformList = array();
+    protected $_transformList = [];
+
 
     /**
      * Returns the name of the transform class based on a given URI
      *
      * @throws Exception
      * @param string $uri The transform URI
-     * @return string The transform implementation class name
+     * @return string|null The transform implementation class name
      */
     protected function _findClassbyURI($uri)
     {
-        switch($uri) {
+        switch ($uri) {
             case 'http://www.w3.org/2000/09/xmldsig#enveloped-signature':
                 return 'Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature';
             case 'http://www.w3.org/2001/10/xml-exc-c14n#':
                 return 'Zend_InfoCard_Xml_Security_Transform_XmlExcC14N';
             default:
                 SimpleSAML\Logger::debug("Unknown or Unsupported Transformation Requested");
+                return null;
         }
     }
+
 
     /**
      * Add a Transform URI to the list of transforms to perform
@@ -71,8 +74,7 @@ class Zend_InfoCard_Xml_Security_Transform
     {
         $class = $this->_findClassbyURI($uri);
 
-        $this->_transformList[] = array('uri' => $uri,
-                                        'class' => $class);
+        $this->_transformList[] = ['uri' => $uri, 'class' => $class];
         return $this;
     }
 
@@ -95,14 +97,16 @@ class Zend_InfoCard_Xml_Security_Transform
     public function applyTransforms($strXmlDocument)
     {
         $transformer = null;
-        foreach($this->_transformList as $transform) {
-            switch($transform['class']) {
-              case 'Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature':
-                  $transformer = new Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature();
-                  break;
-              case 'Zend_InfoCard_Xml_Security_Transform_XmlExcC14N':
-                  $transformer = new Zend_InfoCard_Xml_Security_Transform_XmlExcC14N();
-                  break;
+        foreach ($this->_transformList as $transform) {
+            switch ($transform['class']) {
+                case 'Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature':
+                    $transformer = new Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature();
+                    break;
+                case 'Zend_InfoCard_Xml_Security_Transform_XmlExcC14N':
+                    $transformer = new Zend_InfoCard_Xml_Security_Transform_XmlExcC14N();
+                    break;
+                default:
+                    throw new \Exception("Unknown transformer class specified");
             }
 
             $strXmlDocument = $transformer->transform($strXmlDocument);
