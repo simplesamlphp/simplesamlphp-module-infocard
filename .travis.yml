@@ -17,7 +17,7 @@ matrix:
     - php: 7.3
 
 before_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == "7.3" ]]; then printf "\n" | pecl install -f mcrypt-1.0.2; fi
+  - if [[ "$TRAVIS_PHP_VERSION" >= "7.2" ]]; then printf "\n" | pecl install -f mcrypt-1.0.2; fi
   - composer require "simplesamlphp/simplesamlphp:${SIMPLESAMLPHP_VERSION}" --no-update
   - composer update --no-interaction
 
