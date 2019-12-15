@@ -1,14 +1,14 @@
 <?php
-/*
-* AUTHOR: Samuel Muñoz Hidalgo
-* EMAIL: samuel.mh@gmail.com
-* LAST REVISION: 22-DEC-08
-* DESCRIPTION: InfoCard module template.
-*/
+
+/**
+ * AUTHOR: Samuel Muñoz Hidalgo
+ * EMAIL: samuel.mh@gmail.com
+ * LAST REVISION: 22-DEC-08
+ * DESCRIPTION: InfoCard module template.
+ */
 
 $this->includeAtTemplateBase('includes/header.php');
-if (isset($this->data['error'])) {
-?>
+if (isset($this->data['error'])) {?>
     <div style="border-left: 1px solid #e8e8e8; border-bottom: 1px solid #e8e8e8; background: #f5f5f5">
     <img src="/<?php echo $this->data['baseurlpath']; ?>resources/icons/experience/gtk-dialog-error.48x48.png" class="float-l" style="margin: 15px " />
     <h2><?php echo $this->t('error_header'); ?></h2>
@@ -19,7 +19,7 @@ if (isset($this->data['error'])) {
 
 <!-- GET INFOCARD SECTION -->
 <?php
-if (strcmp($this->data['CardGenerator'] ,'') > 0) {
+if (strcmp($this->data['CardGenerator'], '') > 0) {
     if (strcmp($this->data['form'], "validate") == 0) {
         echo '<h2>' . $this->t('getcardform_title') . '</h2>';
         echo '<form action = ?AuthState=' . htmlspecialchars($this->data['stateparams']['AuthState']) . " method='post'>";
@@ -64,7 +64,7 @@ if (strcmp($this->data['CardGenerator'] ,'') > 0) {
 ?>
 
 <!-- HELP SECTION -->
-<h2><?php echo $this->t('help_header'); ?></h2>	
+<h2><?php echo $this->t('help_header'); ?></h2>
 <p><?php echo $this->t('help_text'); ?></p>
 
 <?php

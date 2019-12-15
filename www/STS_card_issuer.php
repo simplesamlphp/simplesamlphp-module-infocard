@@ -235,7 +235,7 @@ function is_card_enabled($uuid, $delivery_time)
  */
 function DB_update_connected_user($username, $DB_params)
 {
-    $card_id = SimpleSAML\Module\InfoCard\UserFunctions::generate_card_ID($username);
+    $card_id = SimpleSAML\Module\InfoCard\UserFunctions::generateCardID($username);
     $dbconn = pg_connect('host=' . $DB_params['DB_host'] . '  port=' . $DB_params['DB_port'] . '  dbname='
         . $DB_params['DB_dbname'] . ' user=' . $DB_params['DB_user'] . '  password=' . $DB_params['DB_password']);
     $result = pg_fetch_all(pg_query_params($dbconn, 'SELECT * FROM connected_users WHERE name = $1', ["username"]));

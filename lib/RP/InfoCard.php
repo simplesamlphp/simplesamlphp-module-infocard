@@ -218,11 +218,11 @@ class InfoCard
      * @return string
      * @throws \Exception
      */
-    private function walidateSignature($assertions)
+    private function validateSignature($assertions)
     {
         //include_once 'Zend_InfoCard_Xml_Security.php';
         $as = $assertions->asXML();
-        $reference_id = \Zend_InfoCard_Xml_Security::validateXMLSignature(is_string($as) ? $as : '', $this->sts_crt);
+        $reference_id = Security::validateXMLSignature(is_string($as) ? $as : '', $this->sts_crt);
         return $reference_id;
     }
 

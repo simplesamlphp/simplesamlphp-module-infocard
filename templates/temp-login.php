@@ -80,10 +80,10 @@ if (isset($this->data['error'])) { ?>
 
 <!-- GET INFOCARD SECTION -->
     <?php
-        if (strcmp($this->data['CardGenerator'], '') > 0) {
-            echo '<h2>' . $this->t('get_IC') . '</h2>';
-            echo '<a href="' . $this->data['CardGenerator'] . '?AuthState=' . $this->data['stateparams']['AuthState'] . '">' . $this->t('get_IC_link') . '</a>';
-        }
+    if (strcmp($this->data['CardGenerator'], '') > 0) {
+        echo '<h2>' . $this->t('get_IC') . '</h2>';
+        echo '<a href="' . $this->data['CardGenerator'] . '?AuthState=' . $this->data['stateparams']['AuthState'] . '">' . $this->t('get_IC_link') . '</a>';
+    }
     ?>
 
 <!-- HELP SECTION -->
