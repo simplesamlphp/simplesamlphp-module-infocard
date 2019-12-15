@@ -1,6 +1,6 @@
 {
     "name": "simplesamlphp/simplesamlphp-module-infocard",
-    "description": "A SimpleSAMLphp module that works with Information Cards techcnologies.",
+    "description": "A SimpleSAMLphp module that works with Information Cards technologies.",
     "type": "simplesamlphp-module",
     "keywords": [ "simplesamlphp", "InfoCard" ],
     "authors": [
