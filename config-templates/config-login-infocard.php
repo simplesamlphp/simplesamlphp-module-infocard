@@ -40,7 +40,7 @@ $config = [
      * USED IN: Relying Party
      * DESCRIPTION: Only accept tokens signed with this certificate,
      *  if no certificate is set, it'll be assumed to accept
-     *  a self isued token and accept any token. 
+     *  a self isued token and accept any token.
      */
     'sts_crt' => '/etc/apache2/ssl/sts.crt',
    
@@ -54,11 +54,11 @@ $config = [
    
     /*
      * USED IN:
-     *   DESCRIPTION: Array of certificates forming a trust chain.  The local signing
+     * DESCRIPTION: Array of certificates forming a trust chain.  The local signing
      * certificate is [0], the one that signed that is [1], etc, chaining to a
      * trust anchor.
-     * HINT: The first one, [0], should be the same as the sts_crt. 
-     */   
+     * HINT: The first one, [0], should be the same as the sts_crt.
+     */
     'certificates' => [
         0 => '/etc/apache2/ssl/sts.crt',
         1 => '/etc/apache2/ssl/CA.crt'
@@ -70,7 +70,7 @@ $config = [
    
     /*
      * USED IN: InfoCard Generator, Relying Party and STS
-     *   DESCRIPTION: Infocard information
+     * DESCRIPTION: Infocard information
      */
     'InfoCard' => [
         /*
@@ -141,7 +141,7 @@ $config = [
                                                'description' => "apellidos"
                                            ],
             'emailaddress' =>              [
-                                               'displayTag' => "e-mail", 
+                                               'displayTag' => "e-mail",
                                                'description' => "E-mail address"
                                            ]
         ],
@@ -161,21 +161,22 @@ $config = [
    
     /*
      * USED IN: InfoCard Generator, Relying Party (optional form)
-     *   DESCRIPTION: Infocard generator URL, if set it'll  appear a form with username-password authentication in the template
+     * DESCRIPTION: Infocard generator URL, if set it'll
+     *  appear a form with username-password authentication in the template
      */
     'CardGenerator' => 'https://sts.aut.uah.es/simplesaml/module.php/InfoCard/getcardform.php',
 
 
     /*
      * USED IN: InfoCard Generator, Relying Party (issuer), STS (Metadata-Exchange)
-     *   DESCRIPTION: Token generator URL
+     * DESCRIPTION: Token generator URL
      */
     'tokenserviceurl' => 'https://sts.aut.uah.es/simplesaml/module.php/InfoCard/tokenservice.php',
    
    
     /*
      * USED IN: InfoCard Generator
-     *   DESCRIPTION: Metadata Exchange URL
+     * DESCRIPTION: Metadata Exchange URL
      */
     'mexurl' => 'https://sts.aut.uah.es/simplesaml/module.php/InfoCard/mex.php',
 
@@ -202,7 +203,8 @@ $config = [
      * DESCRIPTION: directory where RSTs and RSTRs will be logged EJ: /tmp.
      *  If null, logging will be dissabled.
      *  The directory MUST exists and be accessible to the program, otherwise NO log will be written
-     *  Log files have the form urn:uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.log where X is an hexadecimal digit [0-9|a-f]
+     *  Log files have the form urn:uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.log
+     *  where X is an hexadecimal digit [0-9|a-f]
      */
     'debugDir' => '/tmp'
 ];

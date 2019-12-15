@@ -8,46 +8,45 @@ namespace SimpleSAML\Module\InfoCard\RP;
  * LAST REVISION: 22-DEC-08
  * DESCRIPTION: Zend Infocard libraries added sts certificate check
  */
-require_once 'Zend_InfoCard_Claims.php';
 
 class InfoCard
 {
-    const XENC_NS = "http://www.w3.org/2001/04/xmlenc#";
-    const XENC_ELEMENT_TYPE = "http://www.w3.org/2001/04/xmlenc#Element";
-    const XENC_ENC_ALGO = "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
-    const XENC_KEYINFO_ENC_ALGO = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+    public const XENC_NS = "http://www.w3.org/2001/04/xmlenc#";
+    public const XENC_ELEMENT_TYPE = "http://www.w3.org/2001/04/xmlenc#Element";
+    public const XENC_ENC_ALGO = "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+    public const XENC_KEYINFO_ENC_ALGO = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
 
-    const DSIG_NS = "http://www.w3.org/2000/09/xmldsig#";
-    const DSIG_RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-    const DSIG_ENVELOPED_SIG = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
-    const DSIG_SHA1 = "http://www.w3.org/2000/09/xmldsig#sha1";
+    public const DSIG_NS = "http://www.w3.org/2000/09/xmldsig#";
+    public const DSIG_RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+    public const DSIG_ENVELOPED_SIG = "http://www.w3.org/2000/09/xmldsig#enveloped-signature";
+    public const DSIG_SHA1 = "http://www.w3.org/2000/09/xmldsig#sha1";
 
-    const CANON_EXCLUSIVE = "http://www.w3.org/2001/10/xml-exc-c14n#";
+    public const CANON_EXCLUSIVE = "http://www.w3.org/2001/10/xml-exc-c14n#";
 
-    const WSSE_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-    const WSSE_KEYID_VALUE_TYPE = "http://docs.oasis-open.org/wss/oasis-wss-soap-message-security-1.1#ThumbprintSHA1";
+    public const WSSE_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+    public const WSSE_KEYID_VALUE_TYPE = "http://docs.oasis-open.org/wss/oasis-wss-soap-message-security-1.1#ThumbprintSHA1";
 
-    const XMLSOAP_SELF_ISSUED = "http://schemas.xmlsoap.org/ws/2005/05/identity/issuer/self";
+    public const XMLSOAP_SELF_ISSUED = "http://schemas.xmlsoap.org/ws/2005/05/identity/issuer/self";
 
-    const XMLSOAP_CLAIMS_NS = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims';
+    public const XMLSOAP_CLAIMS_NS = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims';
 
-    const SAML_ASSERTION_1_0_NS = "urn:oasis:names:tc:SAML:1.0:assertion";
-    const SAML_ASSERTION_1_1_NS = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1";
+    public const SAML_ASSERTION_1_0_NS = "urn:oasis:names:tc:SAML:1.0:assertion";
+    public const SAML_ASSERTION_1_1_NS = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1";
 
-    /** @var string $_private_key_file */
-    protected $_private_key_file = '';
+    /** @var string $private_key_file */
+    protected $private_key_file = '';
 
-    /** @var string $_public_key_file */
-    protected $_public_key_file = '';
+    /** @var string $public_key_file */
+    protected $public_key_file = '';
 
-    /** @var string|null $_password */
-    protected $_password;
+    /** @var string|null $password */
+    protected $password;
 
     /** @var \SimpleXMLElement $_xml */
-    protected $_sxml;
+    protected $sxml;
 
-    /** @var string $_sts_crt */
-    protected $_sts_crt = '';
+    /** @var string $sts_crt */
+    protected $sts_crt = '';
 
 
     /**
@@ -72,10 +71,10 @@ class InfoCard
      */
     public function addSTSCertificate($sts_crt)
     {
-        $this->_sts_crt = $sts_crt;
+        $this->sts_crt = $sts_crt;
         if (($sts_crt == null) || (strcmp($sts_crt, '') == 0)) {
             \SimpleSAML\Logger::debug('WARNING: No STS certificate is set, ALL TOKENS WILL BE ACCEPTED');
-        } else if ((!file_exists($sts_crt)) || (!is_readable($sts_crt))) {
+        } elseif ((!file_exists($sts_crt)) || (!is_readable($sts_crt))) {
             throw new \Exception("STS certificate is not readable");
         }
     }
@@ -89,14 +88,14 @@ class InfoCard
      */
     public function addIDPKey($private_key_file, $password = null)
     {
-        $this->_private_key_file = $private_key_file;
-        $this->_password = $password;
+        $this->private_key_file = $private_key_file;
+        $this->password = $password;
 
-        if (!file_exists($this->_private_key_file)) {
-            throw new \Exception("Private key file does not exists"); 
+        if (!file_exists($this->private_key_file)) {
+            throw new \Exception("Private key file does not exists");
         }
     
-        if (!is_readable($this->_private_key_file)) {
+        if (!is_readable($this->private_key_file)) {
             throw new \Exception("Private key file is not readable");
         }
     }
@@ -113,24 +112,24 @@ class InfoCard
      */
     public function addCertificatePair($private_key_file, $public_key_file, $password = null)
     {
-        $this->_private_key_file = $private_key_file;
-        $this->_public_key_file = $public_key_file;
-        $this->_password = $password;
+        $this->private_key_file = $private_key_file;
+        $this->public_key_file = $public_key_file;
+        $this->password = $password;
 
-        if (!file_exists($this->_private_key_file)) {
-            throw new \Exception("Private key file does not exists"); 
+        if (!file_exists($this->private_key_file)) {
+            throw new \Exception("Private key file does not exists");
         }
     
-        if (!is_readable($this->_private_key_file)) {
+        if (!is_readable($this->private_key_file)) {
             throw new \Exception("Private key file is not readable");
         }
 
-        if (!file_exists($this->_public_key_file)) {
-            throw new \Exception("Public key file does not exists"); 
-        }    
+        if (!file_exists($this->public_key_file)) {
+            throw new \Exception("Public key file does not exists");
+        }
 
-        if (!is_readable($this->_public_key_file)) {
-            throw new \Exception("Public key file is not readable"); 
+        if (!is_readable($this->public_key_file)) {
+            throw new \Exception("Public key file is not readable");
         }
     }
 
@@ -139,7 +138,8 @@ class InfoCard
      * @param string $xmlToken
      * @return \Zend_InfoCard_Claims
      */
-    public function process($xmlToken) {
+    public function process($xmlToken)
+    {
         if (strpos($xmlToken, "EncryptedData") === false) {
             \SimpleSAML\Logger::debug('IC: UNsecureToken');
             return $this->processUnSecureToken($xmlToken);
@@ -154,7 +154,8 @@ class InfoCard
      * @param string $xmlToken
      * @return \Zend_InfoCard_Claims
      */
-    private function processSecureToken($xmlToken) {
+    private function processSecureToken($xmlToken)
+    {
         $retval = new \Zend_InfoCard_Claims();
 
         try {
@@ -162,17 +163,17 @@ class InfoCard
             if ($result === false) {
                 throw new \Exception('Unable to parse XML input');
             }
-            $this->_sxml = \simplexml_load_string($xmlToken);
+            $this->sxml = \simplexml_load_string($xmlToken);
             $decryptedToken = $this->decryptToken($xmlToken);
         } catch (\Exception $e) {
-            \SimpleSAML\Logger::debug('ProcSecToken '.$e);
+            \SimpleSAML\Logger::debug('ProcSecToken ' . $e);
             $retval->setError('Failed to extract assertion document');
             $retval->setCode(\Zend_InfoCard_Claims::RESULT_PROCESSING_FAILURE);
             return $retval;
         }
 
         try {
-            $assertions = $this->getAssertions($decryptedToken);    
+            $assertions = $this->getAssertions($decryptedToken);
         } catch (\Exception $e) {
             $retval->setError('Failure processing assertion document');
             $retval->setCode(\Zend_InfoCard_Claims::RESULT_PROCESSING_FAILURE);
@@ -180,7 +181,7 @@ class InfoCard
         }
 
         try {
-            $reference_id = $this->ValidateSignature($assertions);
+            $reference_id = $this->validateSignature($assertions);
             $this->checkConditions($reference_id, $assertions);
         } catch (\Exception $e) {
             $retval->setError($e->getMessage());
@@ -199,9 +200,9 @@ class InfoCard
     private function processUnsecureToken($xmlToken)
     {
         $retval = new \Zend_InfoCard_Claims();
-    
+
         try {
-            $assertions = $this->getAssertions($xmlToken);    
+            $assertions = $this->getAssertions($xmlToken);
         } catch (\Exception $e) {
             $retval->setError('Failure processing assertion document');
             $retval->setCode(\Zend_InfoCard_Claims::RESULT_PROCESSING_FAILURE);
@@ -217,11 +218,11 @@ class InfoCard
      * @return string
      * @throws \Exception
      */
-    private function ValidateSignature($assertions)
+    private function walidateSignature($assertions)
     {
-        include_once 'Zend_InfoCard_Xml_Security.php';
+        //include_once 'Zend_InfoCard_Xml_Security.php';
         $as = $assertions->asXML();
-        $reference_id = \Zend_InfoCard_Xml_Security::validateXMLSignature(is_string($as) ? $as : '', $this->_sts_crt);
+        $reference_id = \Zend_InfoCard_Xml_Security::validateXMLSignature(is_string($as) ? $as : '', $this->sts_crt);
         return $reference_id;
     }
 
@@ -246,7 +247,9 @@ class InfoCard
 
         $conditions = $assertions->getConditions();
         if (is_array($condition_error = $assertions->validateConditions($conditions))) {
-            throw new \Exception("Conditions of assertion document are not met: {$condition_error[1]} ({$condition_error[0]})");
+            throw new \Exception(
+                "Conditions of assertion document are not met: {$condition_error[1]} ({$condition_error[0]})"
+            );
         }
     }
 
@@ -280,7 +283,7 @@ class InfoCard
         foreach ($namespaces as $namespace) {
             switch ($namespace) {
                 case self::SAML_ASSERTION_1_0_NS:
-                    include_once 'Zend_InfoCard_Xml_Assertion_Saml.php';
+                    //include_once 'Zend_InfoCard_Xml_Assertion_Saml.php';
                     /** @var \Zend_InfoCard_Xml_Assertion_Saml $result */
                     $result = \simplexml_load_string($strXmlData, 'Zend_InfoCard_Xml_Assertion_Saml');
                     return $result;
@@ -298,12 +301,12 @@ class InfoCard
      */
     private function decryptToken($xmlToken)
     {
-        if ($this->_sxml['Type'] !== self::XENC_ELEMENT_TYPE) {
+        if ($this->sxml['Type'] !== self::XENC_ELEMENT_TYPE) {
             throw new \Exception("Unknown EncryptedData type found");
         }
 
-        $this->_sxml->registerXPathNamespace('enc', self::XENC_NS);  
-        list($encryptionMethod) = $this->_sxml->xpath("//enc:EncryptionMethod");
+        $this->sxml->registerXPathNamespace('enc', self::XENC_NS);
+        list($encryptionMethod) = $this->sxml->xpath("//enc:EncryptionMethod");
         /** @psalm-suppress TypeDoesNotContainType */
         if (!($encryptionMethod instanceof \SimpleXMLElement)) {
             throw new \Exception("EncryptionMethod node not found");
@@ -316,7 +319,9 @@ class InfoCard
         }
 
         if (!$encMethodDom->hasAttribute("Algorithm")) {
-            throw new \Exception("Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block");
+            throw new \Exception(
+                "Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block"
+            );
         }
 
         $algo = $encMethodDom->getAttribute("Algorithm");
@@ -324,21 +329,21 @@ class InfoCard
             throw new \Exception("Unsupported encryption algorithm");
         }
 
-        $this->_sxml->registerXPathNamespace('ds', self::DSIG_NS);
-        list($keyInfo) = $this->_sxml->xpath("ds:KeyInfo");
+        $this->sxml->registerXPathNamespace('ds', self::DSIG_NS);
+        list($keyInfo) = $this->sxml->xpath("ds:KeyInfo");
         /** @psalm-suppress TypeDoesNotContainType */
         if (!($keyInfo instanceof \SimpleXMLElement)) {
             throw new \Exception("KeyInfo node not found");
         }
 
-        $keyInfo->registerXPathNamespace('enc', self::XENC_NS);  
+        $keyInfo->registerXPathNamespace('enc', self::XENC_NS);
         list($encryptedKey) = $keyInfo->xpath("enc:EncryptedKey");
         /** @psalm-suppress TypeDoesNotContainType */
         if (!($encryptedKey instanceof \SimpleXMLElement)) {
             throw new \Exception("EncryptedKey element not found in KeyInfo");
         }
 
-        $encryptedKey->registerXPathNamespace('enc', self::XENC_NS);  
+        $encryptedKey->registerXPathNamespace('enc', self::XENC_NS);
         list($keyInfoEncryptionMethod) = $encryptedKey->xpath("enc:EncryptionMethod");
         /** @psalm-suppress TypeDoesNotContainType */
         if (!($keyInfoEncryptionMethod instanceof \SimpleXMLElement)) {
@@ -352,7 +357,9 @@ class InfoCard
         }
 
         if (!$keyInfoEncMethodDom->hasAttribute("Algorithm")) {
-            throw new \Exception("Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block");
+            throw new \Exception(
+                "Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block"
+            );
         }
 
         $keyInfoEncMethodAlgo = $keyInfoEncMethodDom->getAttribute("Algorithm");
@@ -391,23 +398,31 @@ class InfoCard
 
         $keyCipherValueBase64Decoded = base64_decode($cipherValue->__toString(), true);
 
-        if (is_null($this->_password)) {
-            $private_key = openssl_pkey_get_private(strval(file_get_contents($this->_private_key_file)));
+        if (is_null($this->password)) {
+            $private_key = openssl_pkey_get_private(strval(file_get_contents($this->private_key_file)));
         } else {
-            $private_key = openssl_pkey_get_private(strval(file_get_contents($this->_private_key_file)), $this->_password);
+            $private_key = openssl_pkey_get_private(
+                strval(file_get_contents($this->private_key_file)),
+                $this->password
+            );
         }
         if (!$private_key) {
             throw new \Exception("Unable to load private key");
         }
     
-        $result = openssl_private_decrypt($keyCipherValueBase64Decoded, $symmetricKey, $private_key, \OPENSSL_PKCS1_OAEP_PADDING);
+        $result = openssl_private_decrypt(
+            $keyCipherValueBase64Decoded,
+            $symmetricKey,
+            $private_key,
+            \OPENSSL_PKCS1_OAEP_PADDING
+        );
         openssl_free_key($private_key);
 
         if (!$result) {
             throw new \Exception("Unable to decrypt symmetric key");
         }
 
-        list($cipherValue2) = $this->_sxml->xpath("enc:CipherData/enc:CipherValue");
+        list($cipherValue2) = $this->sxml->xpath("enc:CipherData/enc:CipherValue");
         /** @psalm-suppress TypeDoesNotContainType */
         if (!($cipherValue2 instanceof \SimpleXMLElement)) {
             throw new \Exception("CipherValue node found in EncryptedData");
@@ -417,7 +432,13 @@ class InfoCard
 
         $mcrypt_iv = substr($keyCipherValueBase64Decoded, 0, 16);
         $keyCipherValueBase64Decoded = substr($keyCipherValueBase64Decoded, 16);
-        $decrypted = mcrypt_decrypt(\MCRYPT_RIJNDAEL_128, $symmetricKey, $keyCipherValueBase64Decoded, \MCRYPT_MODE_CBC, $mcrypt_iv);
+        $decrypted = mcrypt_decrypt(
+            \MCRYPT_RIJNDAEL_128,
+            $symmetricKey,
+            $keyCipherValueBase64Decoded,
+            \MCRYPT_MODE_CBC,
+            $mcrypt_iv
+        );
 
         if (!$decrypted) {
             throw new \Exception("Unable to decrypt token");

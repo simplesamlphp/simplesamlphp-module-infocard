@@ -15,7 +15,8 @@
  * @param string $key
  * @return string
  */
-function decryptMcrypt($data, $key) {
+function decryptMcrypt($data, $key)
+{
     $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
     $iv_length = mcrypt_enc_get_iv_size($td);
 
@@ -42,7 +43,8 @@ function decryptMcrypt($data, $key) {
  * @param string $samlToken
  * @return string|null
  */
-function getppid($samlToken) {
+function getppid($samlToken)
+{
     $token = new DOMDocument();
     $token->loadXML($samlToken);
     $doc = $token->documentElement;
@@ -74,12 +76,17 @@ $ICconfig['UserCredential'] = $autoconfig->getValue('UserCredential');
 $debugDir = $autoconfig->getValue('debugDir');
 
 
-\SimpleSAML\Logger::debug('USERCREDENTIAL: '.$ICconfig['UserCredential']);
+\SimpleSAML\Logger::debug('USERCREDENTIAL: ' . $ICconfig['UserCredential']);
 switch ($ICconfig['UserCredential']) {
     case "UsernamePasswordCredential":
         $username = $doc->getElementsByTagname('Username')->item(0)->nodeValue;
         $password = $doc->getElementsByTagname('Password')->item(0)->nodeValue;
-        if (\SimpleSAML\Module\InfoCard\UserFunctions::validateUser(['username' => $username, 'password' => $password], $ICconfig['UserCredential'])) {
+        if (
+            \SimpleSAML\Module\InfoCard\UserFunctions::validateUser(
+                ['username' => $username, 'password' => $password],
+                $ICconfig['UserCredential']
+            )
+        ) {
             $authenticated = true;
         }
         break;
@@ -99,9 +106,9 @@ switch ($ICconfig['UserCredential']) {
         //Recuperar información
         $encSamlToken = base64_decode($doc->getElementsByTagname('CipherValue')->item(1)->nodeValue);
         $samlToken = decryptMcrypt($encSamlToken, $key);
-        SimpleSAML\Logger::debug('$samlToken'.$samlToken);
+        SimpleSAML\Logger::debug('$samlToken' . $samlToken);
         $ppid = getppid($samlToken);
-        SimpleSAML\Logger::debug('PPID: '.$ppid);
+        SimpleSAML\Logger::debug('PPID: ' . $ppid);
 
         if (\SimpleSAML\Module\InfoCard\UserFunctions::validateUser(['PPID' => $ppid], $ICconfig['UserCredential'])) {
             $authenticated = true;
@@ -120,26 +127,32 @@ if ($authenticated) {
     $ICconfig['sts_crt'] = $autoconfig->getValue('sts_crt');
     $ICconfig['sts_key'] = $autoconfig->getValue('sts_key');
     
-    $requiredClaims = \SimpleSAML\Module\InfoCard\Utils::extractClaims($ICconfig['InfoCard']['schema'], $doc->getElementsByTagname('ClaimType'));
-    $claimValues = \SimpleSAML\Module\InfoCard\UserFunctions::fillClaims($username, $ICconfig['InfoCard']['requiredClaims'], $ICconfig['InfoCard']['optionalClaims'], $requiredClaims);
+    $requiredClaims = \SimpleSAML\Module\InfoCard\Utils::extractClaims(
+        $ICconfig['InfoCard']['schema'],
+        $doc->getElementsByTagname('ClaimType')
+    );
+    $claimValues = \SimpleSAML\Module\InfoCard\UserFunctions::fillClaims(
+        $username,
+        $ICconfig['InfoCard']['requiredClaims'],
+        $ICconfig['InfoCard']['optionalClaims'],
+        $requiredClaims
+    );
     
     $response = \SimpleSAML\Module\InfoCard\STS::createToken($claimValues, $ICconfig, $messageid);
-    
-
 } else {
     $response = \SimpleSAML\Module\InfoCard\STS::errorMessage('Wrong Credentials', $messageid);
 }
 
 
-Header('Content-length: '.strlen($response) + 1);
+Header('Content-length: ' . strlen($response) + 1);
 print($response);
 
 //LOG
 if ($debugDir != null) {
-    $handle = fopen($debugDir.'/'.$messageid.'.log', 'w');
+    $handle = fopen($debugDir . '/' . $messageid . '.log', 'w');
     fwrite($handle, "  ------ InfoCard SimpleSAMLphp Module LOG ------\n\n");
-    fwrite($handle, "-- TIME: ".gmdate('Y-m-d').' '.gmdate('H:i:s')."\n");
-    fwrite($handle, "-- MESSAGE ID: ".$messageid."\n\n\n");
+    fwrite($handle, "-- TIME: " . gmdate('Y-m-d') . ' ' . gmdate('H:i:s') . "\n");
+    fwrite($handle, "-- MESSAGE ID: " . $messageid . "\n\n\n");
     fwrite($handle, "-- RST\n");
     fwrite($handle, $HTTP_RAW_POST_DATA);
     fwrite($handle, "\n\n\n-- RSTR\n");

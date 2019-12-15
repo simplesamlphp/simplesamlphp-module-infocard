@@ -23,56 +23,59 @@ class STS
      * @param array $ICconfig
      * @return string
      */
-    static public function createCard($ICdata, $ICconfig)
+    public static function createCard($ICdata, $ICconfig)
     {
         $infocardbuf  = '<Object Id="IC01" xmlns="http://www.w3.org/2000/09/xmldsig#">';
-        $infocardbuf .= '<InformationCard xml:lang="en-us"  xmlns="http://schemas.xmlsoap.org/ws/2005/05/identity" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">';
+        $infocardbuf .= '<InformationCard xml:lang="en-us" xmlns="http://schemas.xmlsoap.org/ws/2005/05/identity"';
+        $infocardbuf .= ' xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust"';
+        $infocardbuf .= ' xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">';
 
         // CardId
         $infocardbuf .= '<InformationCardReference>';
-        $infocardbuf .= '<CardId>'.$ICdata['CardId'].'</CardId>'; //xs:anyURI cardId (="$cardurl/$ppid";  $ppid = "$uname-" . time();)
+        $infocardbuf .= '<CardId>' . $ICdata['CardId'] . '</CardId>';
+        //xs:anyURI cardId (="$cardurl/$ppid";  $ppid = "$uname-" . time();)
         $infocardbuf .= '<CardVersion>1</CardVersion>'; //xs:unsignedInt
         $infocardbuf .= '</InformationCardReference>';
 
         // CardName
-        $infocardbuf .= '<CardName>'.$ICdata['CardName'].'</CardName>';
+        $infocardbuf .= '<CardName>' . $ICdata['CardName'] . '</CardName>';
 
         // Image
-        $infocardbuf .= '<CardImage MimeType="'.mime_content_type($ICdata['CardImage']).'">';
+        $infocardbuf .= '<CardImage MimeType="' . mime_content_type($ICdata['CardImage']) . '">';
         $infocardbuf .= base64_encode(file_get_contents($ICdata['CardImage']));
         $infocardbuf .= '</CardImage>';
 
         // Issuer - times
-        $infocardbuf .= '<Issuer>'.$ICconfig['InfoCard']['issuer'].'</Issuer>';
-        $infocardbuf .= '<TimeIssued>'.gmdate('Y-m-d').'T'.gmdate('H:i:s').'Z'.'</TimeIssued>';
-        $infocardbuf .= '<TimeExpires>'.$ICdata['TimeExpires'].'</TimeExpires>';
+        $infocardbuf .= '<Issuer>' . $ICconfig['InfoCard']['issuer'] . '</Issuer>';
+        $infocardbuf .= '<TimeIssued>' . gmdate('Y-m-d') . 'T' . gmdate('H:i:s') . 'Z' . '</TimeIssued>';
+        $infocardbuf .= '<TimeExpires>' . $ICdata['TimeExpires'] . '</TimeExpires>';
 
         // Token Service List
         $infocardbuf .= '<TokenServiceList>';
         $infocardbuf .= '<TokenService>';
         $infocardbuf .= '<wsa:EndpointReference>';
-        $infocardbuf .= '<wsa:Address>'.$ICconfig['tokenserviceurl'].'</wsa:Address>';
+        $infocardbuf .= '<wsa:Address>' . $ICconfig['tokenserviceurl'] . '</wsa:Address>';
         $infocardbuf .= '<wsa:Metadata>';
         $infocardbuf .= '<wsx:Metadata>';
         $infocardbuf .= '<wsx:MetadataSection>';
         $infocardbuf .= '<wsx:MetadataReference>';
-        $infocardbuf .= '<wsa:Address>'.$ICconfig['mexurl'].'</wsa:Address>';
+        $infocardbuf .= '<wsa:Address>' . $ICconfig['mexurl'] . '</wsa:Address>';
         $infocardbuf .= '</wsx:MetadataReference>';
         $infocardbuf .= '</wsx:MetadataSection>';
         $infocardbuf .= '</wsx:Metadata>';
         $infocardbuf .= '</wsa:Metadata>';
         $infocardbuf .= '</wsa:EndpointReference>';
 
-        /*  Types of User Credentials 
+        /*  Types of User Credentials
          *  Supported: UsernamePasswordCredential, SelfIssuedCredential
          *  Unsupported: KerberosV5Credential, X509V3Credential
          */
         $infocardbuf .= '<UserCredential>';
-        $infocardbuf .= '<DisplayCredentialHint>'.$ICdata['DisplayCredentialHint'].'</DisplayCredentialHint>';
+        $infocardbuf .= '<DisplayCredentialHint>' . $ICdata['DisplayCredentialHint'] . '</DisplayCredentialHint>';
         switch ($ICconfig['UserCredential']) {
             case 'UsernamePasswordCredential':
                 $infocardbuf .= '<UsernamePasswordCredential>';
-                $infocardbuf .= '<Username>'.$ICdata['UserName'].'</Username>';
+                $infocardbuf .= '<Username>' . $ICdata['UserName'] . '</Username>';
                 $infocardbuf .= '</UsernamePasswordCredential>';
                 break;
             case 'KerberosV5Credential':
@@ -81,11 +84,13 @@ class STS
             case 'X509V3Credential':
                 $infocardbuf .= '<X509V3Credential>';
                 $infocardbuf .= '<ds:X509Data>';
-                $infocardbuf .= '<wsse:KeyIdentifier ValueType="http://docs.oasis-open.org/wss/2004/xx/oasis-2004xx-wss-soap-message-security-1.1#ThumbprintSHA1" EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis200401-wss-soap-message-security-1.0#Base64Binary">';
-                /* This element provides a key identifier for the X.509 certificate based on the SHA1 hash
-             * of the entire certificate content expressed as a “thumbprint.” Note that the extensibility
-             * point in the ds:X509Data element is used to add wsse:KeyIdentifier as a child element.
-             */
+                $infocardbuf .= '<wsse:KeyIdentifier ValueType="http://docs.oasis-open.org/wss/2004/xx/oasis-2004xx-wss-soap-message-security-1.1#ThumbprintSHA1"';
+                $infocardbuf .= ' EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis200401-wss-soap-message-security-1.0#Base64Binary">';
+                /**
+                 * This element provides a key identifier for the X.509 certificate based on the SHA1 hash
+                 * of the entire certificate content expressed as a “thumbprint.” Note that the extensibility
+                 * point in the ds:X509Data element is used to add wsse:KeyIdentifier as a child element.
+                 */
                 $infocardbuf .= $ICdata['KeyIdentifier']; //xs:base64binary;
                 $infocardbuf .= '</wsse:KeyIdentifier>';
                 $infocardbuf .= '</ds:X509Data>';
@@ -114,23 +119,23 @@ class STS
 
         // Claims
         $infocardbuf .= '<SupportedClaimTypeList>';
-        $url = $ICconfig['InfoCard']['schema'].'/claims/';
-        foreach ($ICconfig['InfoCard']['requiredClaims'] as $claim=>$data) {  
-            $infocardbuf .= '<SupportedClaimType Uri="'.$url.$claim.'">';
-            $infocardbuf .= '<DisplayTag>'.$data['displayTag'].'</DisplayTag>';
-            $infocardbuf .= '<Description>'.$data['description'].'</Description>';
+        $url = $ICconfig['InfoCard']['schema'] . '/claims/';
+        foreach ($ICconfig['InfoCard']['requiredClaims'] as $claim => $data) {
+            $infocardbuf .= '<SupportedClaimType Uri="' . $url . $claim . '">';
+            $infocardbuf .= '<DisplayTag>' . $data['displayTag'] . '</DisplayTag>';
+            $infocardbuf .= '<Description>' . $data['description'] . '</Description>';
             $infocardbuf .= '</SupportedClaimType>';
         }
-        foreach ($ICconfig['InfoCard']['optionalClaims'] as $claim=>$data) {  
-            $infocardbuf .= '<SupportedClaimType Uri="'.$url.$claim.'">';
-            $infocardbuf .= '<DisplayTag>'.$data['displayTag'].'</DisplayTag>';
-            $infocardbuf .= '<Description>'.$data['description'].'</Description>';
+        foreach ($ICconfig['InfoCard']['optionalClaims'] as $claim => $data) {
+            $infocardbuf .= '<SupportedClaimType Uri="' . $url . $claim . '">';
+            $infocardbuf .= '<DisplayTag>' . $data['displayTag'] . '</DisplayTag>';
+            $infocardbuf .= '<Description>' . $data['description'] . '</Description>';
             $infocardbuf .= '</SupportedClaimType>';
         }
         $infocardbuf .= '</SupportedClaimTypeList>';
 
         // Privacy URL
-        $infocardbuf .= '<PrivacyNotice>'.$ICconfig['InfoCard']['privacyURL'].'</PrivacyNotice>';
+        $infocardbuf .= '<PrivacyNotice>' . $ICconfig['InfoCard']['privacyURL'] . '</PrivacyNotice>';
 
         $infocardbuf .= '</InformationCard>';
         $infocardbuf .= '</Object>';
@@ -146,9 +151,9 @@ class STS
         $signedinfo .= '<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>';
         $signedinfo .= '</Transforms>';
         $signedinfo .= '<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>';
-        $signedinfo .= '<DigestValue>'.base64_encode(sha1($canonicalbuf, true)).'</DigestValue>';
+        $signedinfo .= '<DigestValue>' . base64_encode(sha1($canonicalbuf, true)) . '</DigestValue>';
         $signedinfo .= '</Reference>';
-        $signedinfo .= '</SignedInfo>'; 
+        $signedinfo .= '</SignedInfo>';
 
         $canonicalbuf = Utils::canonicalize($signedinfo);
 
@@ -161,12 +166,12 @@ class STS
         // Envelope
         $buf = '<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">';
         $buf .= $signedinfo;
-        $buf .= '<SignatureValue>'.$infocard_signature.'</SignatureValue>';
+        $buf .= '<SignatureValue>' . $infocard_signature . '</SignatureValue>';
         $buf .= '<KeyInfo>';
         $buf .= '<X509Data>';
         // Signing certificate(s)
         foreach ($ICconfig['certificates'] as $idx => $cert) {
-            $buf .= '<X509Certificate>'.Utils::takeCert($cert).'</X509Certificate>';
+            $buf .= '<X509Certificate>' . Utils::takeCert($cert) . '</X509Certificate>';
         }
         $buf .= '</X509Data>';
         $buf .= '</KeyInfo>';
@@ -186,12 +191,12 @@ class STS
      * @param string $relatesto
      * @return string
      */
-    static public function errorMessage($msg, $relatesto)
+    public static function errorMessage($msg, $relatesto)
     {
         $buf = '<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">';
         $buf .= '<s:Header>';
         $buf .= '<a:Action s:mustUnderstand="1">http://www.w3.org/2005/08/addressing/soap/fault</a:Action>';
-        $buf .= '<a:RelatesTo>'.$relatesto.'</a:RelatesTo>';
+        $buf .= '<a:RelatesTo>' . $relatesto . '</a:RelatesTo>';
         $buf .= '</s:Header>';
         $buf .= '<s:Body>';
         $buf .= '<s:Fault>';
@@ -227,16 +232,22 @@ class STS
      * @param string $relatesto
      * @return string
      */
-    static public function createToken($claimValues, $config, $relatesto)
+    public static function createToken($claimValues, $config, $relatesto)
     {
         $assertionid = uniqid('uuid-');
-        $created = gmdate('Y-m-d').'T'.gmdate('H:i:s').'Z';
-        $expires = gmdate('Y-m-d', time() + 3600).'T'.gmdate('H:i:s', time() + 3600).'Z';
+        $created = gmdate('Y-m-d') . 'T' . gmdate('H:i:s') . 'Z';
+        $expires = gmdate('Y-m-d', time() + 3600) . 'T' . gmdate('H:i:s', time() + 3600) . 'Z';
 
 
         // SOAP ENVELOPE
         $env = '<?xml version="1.0"?>';
-        $env .= '<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:ic="http://schemas.xmlsoap.org/ws/2005/05/identity" xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust" xmlns:xenc="http://www.w3.org/2001/04/xmlenc" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">';
+        $env .= '<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"';
+        $env .= ' xmlns:wsa="http://www.w3.org/2005/08/addressing"';
+        $env .= ' xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"';
+        $env .= ' xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"';
+        $env .= ' xmlns:ic="http://schemas.xmlsoap.org/ws/2005/05/identity"';
+        $env .= ' xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust"';
+        $env .= ' xmlns:xenc="http://www.w3.org/2001/04/xmlenc" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">';
 
         $env .= '<S:Header>';
         $env .= '<wsa:Action wsu:Id="_1">';
@@ -250,15 +261,15 @@ class STS
         $env .= '</wsa:To>';
         $env .= '<wsse:Security S:mustUnderstand="1">';
         $env .= '<wsu:Timestamp wsu:Id="_6">';
-        $env .= '<wsu:Created>'.$created.'</wsu:Created>';
-        $env .= '<wsu:Expires>'.$expires.'</wsu:Expires>';
+        $env .= '<wsu:Created>' . $created . '</wsu:Created>';
+        $env .= '<wsu:Expires>' . $expires . '</wsu:Expires>';
         $env .= '</wsu:Timestamp>';
         $env .= '</wsse:Security>';
         $env .= '</S:Header>';
 
         $env .= '<S:Body wsu:Id="_10">';
         // RequestSecurityTokenResponse
-        $env .= STS::RequestSecurityTokenResponse($claimValues, $config, $assertionid, $created, $expires);
+        $env .= STS::requestSecurityTokenResponse($claimValues, $config, $assertionid, $created, $expires);
         $env .= '</S:Body>';
         $env .= '</S:Envelope>';
 
@@ -278,18 +289,18 @@ class STS
      * @param string $expires
      * @return string
      */
-    static private function RequestSecurityTokenResponse($claimValues, $config, $assertionid, $created, $expires)
+    private static function requestSecurityTokenResponse($claimValues, $config, $assertionid, $created, $expires)
     {
         $tr = '<wst:RequestSecurityTokenResponse>';
         $tr .= '<wst:TokenType>urn:oasis:names:tc:SAML:1.0:assertion</wst:TokenType>';
         $tr .= '<wst:LifeTime>';
-        $tr .= '<wsu:Created>'.$created.'</wsu:Created>';
-        $tr .= '<wsu:Expires>'.$expires.'</wsu:Expires>';
+        $tr .= '<wsu:Created>' . $created . '</wsu:Created>';
+        $tr .= '<wsu:Expires>' . $expires . '</wsu:Expires>';
         $tr .= '</wst:LifeTime>';
 
         // Encrypted token: SAML assertion
         $tr .= '<wst:RequestedSecurityToken>';
-        $tr .= STS::saml_assertion($claimValues, $config, $assertionid, $created, $expires);
+        $tr .= STS::samlAssertion($claimValues, $config, $assertionid, $created, $expires);
         $tr .= '</wst:RequestedSecurityToken>';
 
         // RequestedAattachedReference
@@ -314,9 +325,9 @@ class STS
         $tr .= '<ic:RequestedDisplayToken>';
         $tr .= '<ic:DisplayToken xml:lang="en-us">';
         foreach ($claimValues as $claim => $data) {
-            $tr .= '<ic:DisplayClaim Uri="'.$config['InfoCard']['schema'].'/claims/'.$claim.'">';
-            $tr .= '<ic:DisplayTag>'.$data['displayTag'].'</ic:DisplayTag>';
-            $tr .= '<ic:DisplayValue>'.$data['value'].'</ic:DisplayValue>';
+            $tr .= '<ic:DisplayClaim Uri="' . $config['InfoCard']['schema'] . '/claims/' . $claim . '">';
+            $tr .= '<ic:DisplayTag>' . $data['displayTag'] . '</ic:DisplayTag>';
+            $tr .= '<ic:DisplayValue>' . $data['value'] . '</ic:DisplayValue>';
             $tr .= "</ic:DisplayClaim>";
         }
         $tr .= '</ic:DisplayToken>';
@@ -337,11 +348,12 @@ class STS
      * @param string $created
      * @param string $expires
      * @return string
-     */ 
-    static private function saml_assertion($claimValues, $config, $assertionid, $created, $expires)
+     */
+    private static function samlAssertion($claimValues, $config, $assertionid, $created, $expires)
     {
-        $saml = '<saml:Assertion MajorVersion="1" MinorVersion="0" AssertionID="'.$assertionid.'" Issuer="'.$config['issuer'].'" IssueInstant="'.$created.'" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">';
-        $saml .= '<saml:Conditions NotBefore="'.$created.'" NotOnOrAfter="'.$expires.'" />';
+        $saml = '<saml:Assertion MajorVersion="1" MinorVersion="0" AssertionID="' . $assertionid . '" Issuer="';
+        $saml .= $config['issuer'] . '" IssueInstant="' . $created . '" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">';
+        $saml .= '<saml:Conditions NotBefore="' . $created . '" NotOnOrAfter="' . $expires . '" />';
         $saml .= '<saml:AttributeStatement>';
         $saml .= '<saml:Subject>';
         $saml .= '<saml:SubjectConfirmation>';
@@ -350,20 +362,20 @@ class STS
         // Proof key
         $saml .= '<dsig:KeyInfo xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">';
         $saml .= '<dsig:X509Data>';
-        $saml .= '<dsig:X509Certificate>'.Utils::takeCert($config['sts_crt']).'</dsig:X509Certificate>';
+        $saml .= '<dsig:X509Certificate>' . Utils::takeCert($config['sts_crt']) . '</dsig:X509Certificate>';
         $saml .= '</dsig:X509Data>';
         $saml .= '</dsig:KeyInfo>';
         $saml .= '</saml:SubjectConfirmation>';
         $saml .= '</saml:Subject>';
         foreach ($claimValues as $claim => $data) {
-            $saml .= '<saml:Attribute AttributeName="'.$claim.'" AttributeNamespace="'.$config['InfoCard']['schema'].'/claims">';
-            $saml .= '<saml:AttributeValue>'.$data['value'].'</saml:AttributeValue>';
+            $saml .= '<saml:Attribute AttributeName="' . $claim . '" AttributeNamespace="' . $config['InfoCard']['schema'] . '/claims">';
+            $saml .= '<saml:AttributeValue>' . $data['value'] . '</saml:AttributeValue>';
             $saml .= '</saml:Attribute>';
         }
         $saml .= '</saml:AttributeStatement>';
 
         // Pure SAML Assertion digest
-        $canonicalbuf = Utils::canonicalize($saml.'</saml:Assertion>');
+        $canonicalbuf = Utils::canonicalize($saml . '</saml:Assertion>');
         $myhash = sha1($canonicalbuf, true);
         $samldigest = base64_encode($myhash);
 
@@ -371,13 +383,13 @@ class STS
         $signedinfo = '<dsig:SignedInfo xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" >';
         $signedinfo .= '<dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />';
         $signedinfo .= '<dsig:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />';
-        $signedinfo .= '<dsig:Reference URI="#'.$assertionid.'">';
+        $signedinfo .= '<dsig:Reference URI="#' . $assertionid . '">';
         $signedinfo .= '<dsig:Transforms>';
         $signedinfo .= '<dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />';
         $signedinfo .= '<dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />';
         $signedinfo .= '</dsig:Transforms>';
         $signedinfo .= '<dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />';
-        $signedinfo .= '<dsig:DigestValue>'.$samldigest.'</dsig:DigestValue>';
+        $signedinfo .= '<dsig:DigestValue>' . $samldigest . '</dsig:DigestValue>';
         $signedinfo .= '</dsig:Reference>';
         $signedinfo .= '</dsig:SignedInfo>';
 
@@ -392,10 +404,10 @@ class STS
         // Signature block
         $saml .= '<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">';
         $saml .= $signedinfo;
-        $saml .= '<dsig:SignatureValue>'.$samlsignature.'</dsig:SignatureValue>';
+        $saml .= '<dsig:SignatureValue>' . $samlsignature . '</dsig:SignatureValue>';
         $saml .= '<dsig:KeyInfo>';
         $saml .= '<dsig:X509Data>';
-        $saml .= '<dsig:X509Certificate>'.Utils::takeCert($config['sts_crt']).'</dsig:X509Certificate>';
+        $saml .= '<dsig:X509Certificate>' . Utils::takeCert($config['sts_crt']) . '</dsig:X509Certificate>';
         $saml .= '</dsig:X509Data>';
         $saml .= '</dsig:KeyInfo>';
         $saml .= '</dsig:Signature>';

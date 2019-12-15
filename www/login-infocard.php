@@ -35,7 +35,7 @@ if (!array_key_exists('AuthState', $_REQUEST)) {
     throw new \SimpleSAML\Error\BadRequest('Missing AuthState parameter.');
 } else {
     $authStateId = $_REQUEST['AuthState'];
-    \SimpleSAML\Logger::debug('AUTH STATE:  '.$authStateId);
+    \SimpleSAML\Logger::debug('AUTH STATE:  ' . $authStateId);
 }
 
 if (array_key_exists('xmlToken', $_POST) && ($_POST['xmlToken'] != null)) {
@@ -49,12 +49,17 @@ if (array_key_exists('xmlToken', $_POST) && ($_POST['xmlToken'] != null)) {
 unset($_POST); //Show the languages bar if reloaded
  
 //Login Page
-$t = new \SimpleSAML\XHTML\Template($config, 'InfoCard:temp-login.php', 'InfoCard:dict-InfoCard'); //(configuracion, template, diccionario)
+$t = new \SimpleSAML\XHTML\Template(
+    $config,
+    'InfoCard:temp-login.php',
+    'InfoCard:dict-InfoCard'
+); //(configuration, template, dictionary)
 $t->data['header'] = 'SimpleSAMLphp: Infocard login';
 $t->data['stateparams'] = ['AuthState' => $authStateId];
 $t->data['IClogo'] = $IClogo;
 $t->data['InfoCard'] = $Infocard;
-$t->data['InfoCard']['issuer'] = $autoconfig->getValue('tokenserviceurl'); //SimpleSAML\Module\InfoCard\Utils::getIssuer($sts_crt);
+//SimpleSAML\Module\InfoCard\Utils::getIssuer($sts_crt);
+$t->data['InfoCard']['issuer'] = $autoconfig->getValue('tokenserviceurl');
 $t->data['CardGenerator'] = $cardGenerator;
 $t->data['help_desk_email_URL'] = $help_desk_email_URL;
 $t->data['contact_info_URL'] = $contact_info_URL;

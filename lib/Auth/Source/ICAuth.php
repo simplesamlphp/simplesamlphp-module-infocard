@@ -17,11 +17,11 @@ use Webmozart\Assert\Assert;
 class ICAuth extends \SimpleSAML\Auth\Source
 {
     //The string used to identify our states.
-    const STAGEID = '\SimpleSAML\Module\core\Auth\UserPassBase.state';
+    public const STAGEID = '\SimpleSAML\Module\core\Auth\UserPassBase.state';
 
 
     //The key of the AuthId field in the state.
-    const AUTHID = '\SimpleSAML\Module\core\Auth\UserPassBase.AuthId';
+    public const AUTHID = '\SimpleSAML\Module\core\Auth\UserPassBase.AuthId';
 
     
     /**
@@ -68,11 +68,11 @@ class ICAuth extends \SimpleSAML\Auth\Source
 
         $infocard = new \SimpleSAML\Module\InfoCard\RP\InfoCard();
         $infocard->addIDPKey($idp_key, $idp_pass);
-        $infocard->addSTSCertificate($sts_crt);    
+        $infocard->addSTSCertificate($sts_crt);
         if (!$xmlToken) {
-            \SimpleSAML\Logger::debug("XMLtoken: ".$xmlToken);
+            \SimpleSAML\Logger::debug("XMLtoken: " . $xmlToken);
         } else {
-            \SimpleSAML\Logger::debug("NOXMLtoken: ".$xmlToken);
+            \SimpleSAML\Logger::debug("NOXMLtoken: " . $xmlToken);
             $claims = $infocard->process($xmlToken);
             if ($claims->isValid()) {
                 $attributes = [];
@@ -87,15 +87,15 @@ class ICAuth extends \SimpleSAML\Auth\Source
                 $state = \SimpleSAML\Auth\State::loadState($authStateId, self::STAGEID);
                 if (is_null($state)) {
                     throw new \SimpleSAML\Error\NoState();
-                } else if (!array_key_exists(self::AUTHID, $state)) {
+                } elseif (!array_key_exists(self::AUTHID, $state)) {
                     throw new \SimpleSAML\Error\AuthSource(self::AUTHID, "AuthSource not found in state");
                 }
                 // Find authentication source
                 $source = \SimpleSAML\Auth\Source::getById($state[self::AUTHID]);
                 if ($source === null) {
-                    throw new \Exception('Could not find authentication source with id '.$state[self::AUTHID]);
-                }            
-                $state['Attributes'] = $attributes;    
+                    throw new \Exception('Could not find authentication source with id ' . $state[self::AUTHID]);
+                }
+                $state['Attributes'] = $attributes;
                 unset($infocard);
                 unset($claims);
                 \SimpleSAML\Auth\Source::completeAuth($state);

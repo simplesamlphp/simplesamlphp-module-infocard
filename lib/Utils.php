@@ -1,6 +1,7 @@
 <?php
 
 namespace SimpleSAML\Module\InfoCard;
+
 /*
  * AUTHOR: Samuel Muñoz Hidalgo
  * EMAIL: samuel.mh@gmail.com
@@ -17,7 +18,7 @@ class Utils
      * @param string $cert
      * @return string
      */
-    static public function takeCert($cert)
+    public static function takeCert($cert)
     {
         $begin = "CERTIFICATE-----";
         $end = "-----END";
@@ -35,7 +36,7 @@ class Utils
      * @param string $XMLdoc
      * @return string
      */
-    static public function canonicalize($XMLdoc)
+    public static function canonicalize($XMLdoc)
     {
         $dom = new \DOMDocument();
         $dom->loadXML($XMLdoc);
@@ -47,7 +48,7 @@ class Utils
      * @param string $cert
      * @return string
      */
-    static public function thumbcert($cert)
+    public static function thumbcert($cert)
     {
         return base64_encode(sha1(base64_decode($cert), true));
     }
@@ -61,7 +62,7 @@ class Utils
      * @param string $cert
      * @return string
      */
-    static public function getIssuer($cert)
+    public static function getIssuer($cert)
     {
         if ($cert == null) {
             return 'http://schemas.xmlsoap.org/ws/2005/05/identity/issuer/self';
@@ -87,21 +88,22 @@ class Utils
      * @param \DOMNodeList $nodeList
      * @return array
      */
-    static public function extractClaims($ICschema, $nodeList)
+    public static function extractClaims($ICschema, $nodeList)
     {
         /**
          * Returns the Uri attribute from an attribute list
          * @param \DOMNamedNodeMap $attrList
          * @return string
          */
-        function getUri($attrList) {
+        function getUri($attrList)
+        {
             $uri = null;
             $end = false;
             $i = 0;
             do {
                 if ($i > $attrList->length) {
                     $end = true;
-                } else if (strcmp($attrList->item($i)->name, 'Uri') == 0) {
+                } elseif (strcmp($attrList->item($i)->name, 'Uri') == 0) {
                     $end = true;
                     $uri = $attrList->item($i)->value;
                 } else {
@@ -112,18 +114,18 @@ class Utils
         }
 
         $requiredClaims = [];
-        $schema = $ICschema."/claims/";
-        \SimpleSAML\Logger::debug("schema:   ".$schema);
+        $schema = $ICschema . "/claims/";
+        \SimpleSAML\Logger::debug("schema:   " . $schema);
         $pattern = '/\//';
         $replacement = '\/';
-        $schema = '/'.preg_replace($pattern, $replacement, $schema).'/';
+        $schema = '/' . preg_replace($pattern, $replacement, $schema) . '/';
         for ($i = 0; $i < ($nodeList->length); $i++) {
             $replacement = '';
             $uri = getUri($nodeList->item($i)->attributes);
             $claim = preg_replace($schema, $replacement, $uri);
             $requiredClaims[$i] = $claim;
-            \SimpleSAML\Logger::debug("uri:   ".$uri);
-            \SimpleSAML\Logger::debug("claim: ".$claim);
+            \SimpleSAML\Logger::debug("uri:   " . $uri);
+            \SimpleSAML\Logger::debug("claim: " . $claim);
         }
         return $requiredClaims;
     }

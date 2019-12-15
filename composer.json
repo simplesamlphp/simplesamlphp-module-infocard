@@ -16,7 +16,8 @@
         "ext-mcrypt": "*",
         "ext-simplexml": "*",
         "simplesamlphp/composer-module-installer": "~1.1",
-        "webmozart/assert": "^1.4 <1.6"
+        "webmozart/assert": "^1.4 <1.6",
+        "zf1/zend-infocard": "~1.12"
     },
     "require-dev": {
         "simplesamlphp/simplesamlphp": "~1.18",

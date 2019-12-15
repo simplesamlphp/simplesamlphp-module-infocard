@@ -1,13 +1,14 @@
 <?php
 
 namespace SimpleSAML\Module\InfoCard;
+
 /*
  * AUTHOR: Samuel Muñoz Hidalgo
  * EMAIL: samuel.mh@gmail.com
  * LAST REVISION: 13-FEB-09
  * DESCRIPTION: Functions for interconecting the system with your data model.
  *  Edit this functions to fit your needs
- */ 
+ */
 
 class UserFunctions
 {
@@ -20,12 +21,15 @@ class UserFunctions
      * @param string $type
      * @return bool
      */
-    static public function validateUser($credential, $type)
+    public static function validateUser($credential, $type)
     {
         $status = false;
         switch ($type) {
             case 'UsernamePasswordCredential':
-                if ((strcmp($credential['username'], 'usuario') == 0) && (strcmp($credential['password'], 'clave') == 0)) {
+                if (
+                    (strcmp($credential['username'], 'usuario') == 0)
+                    && (strcmp($credential['password'], 'clave') == 0)
+                ) {
                     $status = true;
                 }
                 break;
@@ -56,17 +60,17 @@ class UserFunctions
      * @param array $requiredClaims
      * @return array
      */
-    static public function fillClaims($user, $configuredRequiredClaims, $configuredOptionalClaims, $requiredClaims)
+    public static function fillClaims($user, $configuredRequiredClaims, $configuredOptionalClaims, $requiredClaims)
     {
         $claimValues = [];
         foreach ($requiredClaims as $claim) {
             if (array_key_exists($claim, $configuredRequiredClaims)) {
                 // The claim exists
-                $claimValues[$claim]['value'] = "value-".$claim;
+                $claimValues[$claim]['value'] = "value-" . $claim;
                 $claimValues[$claim]['displayTag'] = $configuredRequiredClaims[$claim]['displayTag'];
-            } else if (array_key_exists($claim, $configuredOptionalClaims)) {
+            } elseif (array_key_exists($claim, $configuredOptionalClaims)) {
                 // The claim exists
-                $claimValues[$claim]['value'] = "value-".$claim;
+                $claimValues[$claim]['value'] = "value-" . $claim;
                 $claimValues[$claim]['displayTag'] = $configuredOptionalClaims[$claim]['displayTag'];
             } else {
                 // The claim DOES NOT exist
@@ -86,9 +90,9 @@ class UserFunctions
      * @param string $user
      * @return string
      */
-    static public function generate_card_ID($user)
+    public static function generateCardID($user)
     {
-        return 'urn:self-sts.uah.es:'.$user;
+        return 'urn:self-sts.uah.es:' . $user;
     }
     
 
@@ -103,11 +107,11 @@ class UserFunctions
      * @param string|null $ppid
      * @return array
      */
-    static public function fillICdata($user, $UserCredential, $ppid = null)
+    public static function fillICdata($user, $UserCredential, $ppid = null)
     {
         $ICdata = [];
-        $ICdata['CardId'] = \SimpleSAML\Module\InfoCard\UserFunctions::generate_card_ID($user);
-        $ICdata['CardName'] = $user."-SELFCREDENTIAL-IC";
+        $ICdata['CardId'] = \SimpleSAML\Module\InfoCard\UserFunctions::generateCardID($user);
+        $ICdata['CardName'] = $user . "-SELFCREDENTIAL-IC";
         $ICdata['CardImage'] = '/var/simplesaml/modules/InfoCard/www/resources/demoimage.png';
         $ICdata['TimeExpires'] = "9999-12-31T23:59:59Z";
         
