@@ -23,7 +23,7 @@ env:
   - COMMAND="composer update"
 
 before_script:
-  - pecl install -f mcrypt-1.0.2
+  - printf "\n" | pecl install -f mcrypt-1.0.2;
   - ${COMMAND}
 
 script:
@@ -51,6 +51,7 @@ jobs:
       php: 7.2
       env: Syntax check PHP
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer install
       script:
         - vendor/bin/check-syntax-php.sh
@@ -59,6 +60,7 @@ jobs:
       php: 7.3
       env: Syntax check PHP
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer install
       script:
         - vendor/bin/check-syntax-php.sh
@@ -67,6 +69,7 @@ jobs:
       php: 7.4
       env: Syntax check PHP
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer install
       script:
         - vendor/bin/check-syntax-php.sh
@@ -75,6 +78,7 @@ jobs:
       php: 7.3
       env: Syntax check YAML / XML / JSON
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer update
       script:
         - vendor/bin/check-syntax-yaml.sh
@@ -90,6 +94,7 @@ jobs:
       php: 7.3
       env: Security check (composer install)
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer install
       script:
         - vendor/bin/security-checker security:check
@@ -98,6 +103,7 @@ jobs:
       php: 7.3
       env: Security check (composer update)
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer update
       script:
         - vendor/bin/security-checker security:check
@@ -106,6 +112,7 @@ jobs:
       php: 7.3
       env: Codecov
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer update
         - php vendor/bin/phpunit
       script:
@@ -115,6 +122,7 @@ jobs:
       php: 7.3
       env: Psalm
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer update
       script:
         - vendor/bin/psalm
@@ -123,6 +131,7 @@ jobs:
       php: 7.3
       env: PHP Codesniffer
       before_script:
+        - printf "\n" | pecl install -f mcrypt-1.0.2;
         - composer update
       script:
         - vendor/bin/phpcs
